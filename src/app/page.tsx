@@ -1,8 +1,10 @@
+import { ModeChange } from "@/components/mode-change";
 import Image from "next/image";
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <ModeChange />
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
@@ -12,6 +14,7 @@ export default function Home() {
           height={38}
           priority
         />
+        <div className="bg-card p-5 rounded-xl">
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Get started by editing{" "}
@@ -22,6 +25,7 @@ export default function Home() {
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
+        </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
