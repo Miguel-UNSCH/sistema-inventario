@@ -26,7 +26,7 @@ export function ModeChange() {
         variant={currentTheme === "light" ? "default" : "outline"}
         size="icon"
         onClick={() => setTheme("light")}
-        className="rounded-full w-fit h-fit p-2 hover:bg-destructive"
+        className="rounded-full w-fit h-fit p-2"
       >
         <Sun className="w-4 h-4" />
       </Button>
@@ -34,7 +34,7 @@ export function ModeChange() {
         variant={currentTheme === "dark" ? "default" : "outline"}
         size="icon"
         onClick={() => setTheme("dark")}
-        className="rounded-full w-fit h-fit p-2 dark:text-foreground hover:bg-destructive"
+        className="rounded-full w-fit h-fit p-2"
       >
         <Moon className="w-4 h-4" />
       </Button>
@@ -42,7 +42,7 @@ export function ModeChange() {
         variant="outline"
         size="icon"
         onClick={() => setTheme("system")}
-        className="rounded-full w-fit h-fit p-2 hover:bg-destructive"
+        className="rounded-full w-fit h-fit p-2"
       >
         <MonitorCog className="w-4 h-4" />
       </Button>
