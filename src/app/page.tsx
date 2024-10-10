@@ -1,105 +1,109 @@
-import { ModeChange } from "@/components/mode-change";
+
+import { ArrowRight } from "lucide-react";
+import { Degraded } from "@/components/text/degraded";
 import Image from "next/image";
+import { ModeChange } from "@/components/mode-change";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <ModeChange />
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <div className="bg-card p-5 rounded-xl">
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-        </div>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div className="bg-bgColor min-h-screen flex flex-col">
+      <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
+        <div className="flex items-center">
+          <div className="mr-2">
             <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={"/logo/logo.png"}
+              alt="ReenFabric Logo"
+              width={100}
+              height={50}
+              className="object-contain h-auto w-32"  // Ajusta ancho y alto con object-contain
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+        </div>
+        <ModeChange />
+      </nav>
+      <main className="container mx-auto px-4 flex-1 flex flex-col gap-5 md:flex-row items-center justify-center">
+        <div className="md:w-1/2 mb-10 md:mb-0">
+          <h1 className="text-5xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+            ¡Bienvenido a{" "}
+            <span className="inline-block text-green-500">
+              <Degraded
+                text="ReenFabric"
+                fromColor="var(--foreground)"
+                toColor="var(--primary)"
+                fontWeight="extrabold"
+              />
+            </span>!
+            <br />
+            <span className="relative">Tu Asistente para la Gestión</span>
+            <br />
+            de Inventarios que
+            <br />
+            <span className="text-white bg-green-400 rounded-sm inline-block">Simplifica</span> tu Trabajo
+          </h1>
+          <p className="text-lg text-card-foreground mb-8">
+            En <span className="font-semibold text-green-500">ReenFabric</span>, te ofrecemos una solución eficiente para gestionar tus inventarios. Organiza tus productos de manera sencilla.
+            <span className="text-orange-500 font-semibold"> ¡Empieza a mejorar tu flujo de trabajo hoy mismo!</span>
+          </p>
+          <div className="flex space-x-4">
+            <button className="bg-green-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-600 transition-all duration-300 flex items-center">
+              Iniciar sesión
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </button>
+            <button className="border border-green-500 text-green-500 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors duration-300 flex items-center">
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2-13v6l5-3-5-3z" />
+              </svg>
+              Tutorial de uso
+            </button>
+          </div>
+        </div>
+        <div className="md:w-1/2 relative hidden sm:block dark:hidden">
+          <Image
+            src="/images/image_1_claro.png"
+            width={800}
+            height={400}
+            alt="Dashboard Preview"
+            className="w-full h-auto rounded-lg shadow-xl drop-shadow-lg"
+          />
+          <Image
+            src="/images/image_3_claro.png"
+            width={800}
+            height={400}
+            alt="Card Preview"
+            className="absolute top-1/4 left-8 w-48 h-auto transform -rotate-12 rounded-lg shadow-xl drop-shadow-lg"
+          />
+          <Image
+            src="/images/image_2_claro.png"
+            width={800}
+            height={400}
+            alt="Stats Preview"
+            className="absolute bottom-1/4 -right-10 w-96 h-auto transform rotate-12 rounded-lg shadow-xl drop-shadow-lg"
+          />
+        </div>
+        <div className="md:w-1/2 relative hidden dark:sm:block">
+          <Image
+            src="/images/image_1_dark.png"
+            width={800}
+            height={400}
+            alt="Dashboard Preview"
+            className="w-full h-auto rounded-lg shadow-xl drop-shadow-lg"
+          />
+          <Image
+            src="/images/image_3_dark.png"
+            width={800}
+            height={400}
+            alt="Card Preview"
+            className="absolute top-1/4 left-8 w-48 h-auto transform -rotate-12 rounded-lg shadow-xl drop-shadow-lg"
+          />
+          <Image
+            src="/images/image_2_dark.png"
+            width={800}
+            height={400}
+            alt="Stats Preview"
+            className="absolute bottom-1/4 -right-10 w-96 h-auto transform rotate-12 rounded-lg shadow-xl drop-shadow-lg"
+          />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
