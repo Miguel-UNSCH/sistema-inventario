@@ -44,14 +44,14 @@
     --popover: #0a0a0a;
     --popover-foreground: #fafafa;
     --primary: #27DA68;
-    --primary-foreground: #171717;
+    --primary-foreground: #fafafa;
     --secondary: #262626;
     --secondary-foreground: #fafafa;
     --muted: #262626;
     --muted-foreground: #a2a2a2;
     --accent: #262626;
     --accent-foreground: #fafafa;
-    --destructive: #9f1c1c;
+    --destructive: #f02828;
     --destructive-foreground: #fafafa;
     --border: #353f48;
     --input: #353f48;
