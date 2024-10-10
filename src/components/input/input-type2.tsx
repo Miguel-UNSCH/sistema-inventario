@@ -3,7 +3,7 @@ import { Input } from "../ui/input";
 interface TextLabelInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
-  isRequired: boolean;
+  isRequired?: boolean;
 }
 
 function TextLabelInput({id, label, isRequired, ...props} : TextLabelInputProps) {

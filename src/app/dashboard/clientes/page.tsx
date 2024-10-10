@@ -1,7 +1,7 @@
+import { DialogForm } from "@/components/dialog/dialog-form";
 import FormContainer from "@/components/forms/form-container";
 import TextLabelInput from "@/components/input/input-type2";
 import CustomDataTable from "@/components/table/custom-data-table";
-import { Input } from "@/components/ui/input";
 
 const data = [
   { nombres: "John", apellidoPaterno: "Doe", apellidoMaterno: "Doe", dni: "87654321" },
@@ -28,6 +28,7 @@ function Page() {
   return (
     <div className="flex flex-col gap-4">
       <FormContainer title="Clientes (Persona natural)">
+        <DialogForm />
       <TextLabelInput label="Nombres" isRequired id="1" type="number"/>
       Clientes
       <CustomDataTable headers={headers} data={data} initialItemsPerPage={5}/>
