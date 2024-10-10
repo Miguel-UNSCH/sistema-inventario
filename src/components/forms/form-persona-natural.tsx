@@ -15,15 +15,15 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { personaNaturalSchema } from "@/utils/zod/schemas"
+import { createPersonaNatural } from "@/lib/actions"
 
-export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data: any) => void}) {
+export function FormClientePersonaNatural() {
   const form = useForm<z.infer<typeof personaNaturalSchema>>({
     resolver: zodResolver(personaNaturalSchema),
   })
 
-  async function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
-    console.log(values)
-    await onSubmitData(values)
+  function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
+    createPersonaNatural(values)
   }
 
   return (

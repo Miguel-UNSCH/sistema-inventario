@@ -182,19 +182,6 @@ const headers = [
   { key: "address", label: "Dirección" },
 ];
 
-async function submitDataPersonNatural(data: any) {
-  const res = await fetch("/api/clientes", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  const resp = await res.json();
-  console.log(resp);
-}
-
 function Page() {
   return (
     <FormContainer title="Clientes">
