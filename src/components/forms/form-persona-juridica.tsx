@@ -14,16 +14,15 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { personaNaturalSchema } from "@/utils/zod/schemas"
+import { personaJuridicaSchema } from "@/utils/zod/schemas"
 
-export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data: any) => void}) {
-  const form = useForm<z.infer<typeof personaNaturalSchema>>({
-    resolver: zodResolver(personaNaturalSchema),
+export function FormClientePersonaJuridica() {
+  const form = useForm<z.infer<typeof personaJuridicaSchema>>({
+    resolver: zodResolver(personaJuridicaSchema),
   })
 
-  async function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
+  function onSubmit(values: z.infer<typeof personaJuridicaSchema>) {
     console.log(values)
-    await onSubmitData(values)
   }
 
   return (
@@ -31,12 +30,12 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
-          name="firstName"
+          name="companyName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombres:</FormLabel>
+              <FormLabel>Razón social:</FormLabel>
               <FormControl>
-                <Input placeholder="Juan" {...field} />
+                <Input placeholder="Corporacion ..." {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>
@@ -44,12 +43,12 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
         />
         <FormField
           control={form.control}
-          name="lastName"
+          name="ruc"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Apellidos:</FormLabel>
+              <FormLabel>RUC:</FormLabel>
               <FormControl>
-                <Input placeholder="Perez Perez" {...field} />
+                <Input placeholder="20102020 ..." {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>
@@ -57,12 +56,12 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
         />
         <FormField
           control={form.control}
-          name="identifier"
+          name="representativeName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>DNI o pasaporte:</FormLabel>
+              <FormLabel>Nombre del representante:</FormLabel>
               <FormControl>
-                <Input placeholder="10203040" {...field} />
+                <Input placeholder="Juan perez ..." {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>
@@ -70,12 +69,12 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
         />
         <FormField
           control={form.control}
-          name="email"
+          name="representativePosition"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Correo electrónico:</FormLabel>
+              <FormLabel>Puesto del representante:</FormLabel>
               <FormControl>
-                <Input placeholder="juanperez@gmail.com" {...field} />
+                <Input placeholder="Gerente general" {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>
@@ -83,12 +82,12 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
         />
         <FormField
           control={form.control}
-          name="phone"
+          name="companyEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Número de celular:</FormLabel>
+              <FormLabel>Correo de la empresa:</FormLabel>
               <FormControl>
-                <Input placeholder="1987654321" {...field} />
+                <Input placeholder="gatitas@gatitas.com" {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>
@@ -96,12 +95,38 @@ export function FormClientePersonaNatural({onSubmitData}: {onSubmitData : (data:
         />
         <FormField
           control={form.control}
-          name="address"
+          name="companyPhone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Dirección:</FormLabel>
+              <FormLabel>Número de teléfono:</FormLabel>
               <FormControl>
-                <Input placeholder="Calle los pinos mz D ..." {...field} />
+                <Input placeholder="987654321" {...field} />
+              </FormControl>
+              <FormMessage className="text-end"/>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="companyAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Dirección de la empresa:</FormLabel>
+              <FormControl>
+                <Input placeholder="Jr. los pinos ..." {...field} />
+              </FormControl>
+              <FormMessage className="text-end"/>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="companyType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de empresa:</FormLabel>
+              <FormControl>
+                <Input placeholder="pequeña/mediana/grande" {...field} />
               </FormControl>
               <FormMessage className="text-end"/>
             </FormItem>

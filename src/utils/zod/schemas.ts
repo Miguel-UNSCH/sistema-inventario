@@ -3,10 +3,9 @@ import { z } from 'zod';
 export const personaNaturalSchema = z.object({
   firstName: z.string().min(3, {message: "El nombre es obligatorio"}),
   lastName: z.string().min(3, "El apellido es obligatorio"),
-  dni: z.string()
-    .regex(/^\d{8}$/, "El DNI debe tener 8 dígitos")
+  identifier: z.string()
+    .regex(/^\d{8}$/, "La identificación debe tener 8 dígitos")
     .optional(),
-  passport: z.string().optional(), // Alternativa al DNI
   email: z.string().email("Correo electrónico no válido"),
   phone: z.string()
     .regex(/^\d+$/, "El teléfono solo puede contener números")
@@ -19,7 +18,7 @@ export const personaNaturalSchema = z.object({
 });
 
 export const personaJuridicaSchema = z.object({
-  companyName: z.string().min(1, "La razón social es obligatoria"),
+  companyName: z.string().min(5, "La razón social es obligatoria"),
   ruc: z.string()
     .regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
   representativeName: z.string().min(1, "El nombre del representante es obligatorio"),
