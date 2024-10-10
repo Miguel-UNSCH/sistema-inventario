@@ -25,7 +25,7 @@ function Dashboard({
       <Aside sidebarOptions={sidebarOptions} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} sidebarMinimize={sidebarMinimize} toogleMinimizeSidebar={toogleMinimizeSidebar} toggleSidebar={toggleSidebar} />
       <div className="relative flex h-[100vh] flex-col flex-1">
         {
-          openSidebar && <div onClick={() => (setOpenSidebar(false))} className={`lg:hidden absolute w-full h-full bg-black opacity-35`}></div>
+          openSidebar && <div onClick={() => (setOpenSidebar(false))} className={`lg:hidden absolute z-10 w-full h-full bg-black opacity-35`}></div>
         }
         <Header roleUser={roleUser} toggleSidebar={toggleSidebar} />
         <main className="bg-background text-foreground h-full p-4 overflow-y-auto">

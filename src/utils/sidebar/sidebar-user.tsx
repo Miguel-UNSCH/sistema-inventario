@@ -1,15 +1,13 @@
 
 import { GoHomeFill } from "react-icons/go";
-import { HiClipboardDocumentList, HiDocumentChartBar } from "react-icons/hi2";
-import { FaBook, FaUserCog, FaUserGraduate } from "react-icons/fa";
+import { HiDocumentChartBar } from "react-icons/hi2";
+import { FaCartPlus, FaShoppingCart, FaUserCog, FaUsers, FaUserShield } from "react-icons/fa";
 import { RiUserVoiceFill } from "react-icons/ri";
-import { IoDocumentText, IoSettings } from "react-icons/io5";
-import { GiDiploma, GiReceiveMoney } from "react-icons/gi";
-import { PiPathBold } from "react-icons/pi";
-import { GrMoney } from "react-icons/gr";
-import { TbDisabled } from "react-icons/tb";
-import { Receipt } from "lucide-react";
+import { IoSettings } from "react-icons/io5";
+import { BiSolidCategoryAlt } from "react-icons/bi";
+
 import { SidebarMenu } from "@/types/opciones_menu";
+import { FaBuildingUser, FaListCheck, FaTruckArrowRight, FaUsersGear } from "react-icons/fa6";
 
 export const SIDEBAR_USER_MENU: SidebarMenu = {
   title: 'Menu',
@@ -20,79 +18,81 @@ export const SIDEBAR_USER_MENU: SidebarMenu = {
       icon: <GoHomeFill className="h-5 w-5"/>,
     },
     {
+      label: 'Clientes',
+      href: '/dashboard/clientes',
+      icon: <FaUsers className="h-5 w-5"/>,
+    },
+    {
       label: 'Reportes',
       href: '/dashboard/reportes',
       icon: <HiDocumentChartBar className="h-5 w-5"/>,
     },
     {
-      label: 'Legajo',
-      icon: <IoDocumentText className="h-5 w-5"/>,
+      label: 'Gestión de productos',
+      icon: <FaShoppingCart className="h-5 w-5"/>,
       children: [
         {
-          label: 'Datos personales',
-          href: '/dashboard/legajo/datos',
+          label: 'Categorias',
+          href: '/dashboard/productos/categorias',
+          icon: <BiSolidCategoryAlt className="h-5 w-5"/>,
+        },
+        {
+          label: 'Productos',
+          href: '/dashboard/productos/productos',
+          icon: <FaCartPlus className="h-5 w-5"/>,
+        },
+        {
+          label: 'Proveedores',
+          href: '/dashboard/productos/proveedores',
+          icon: <FaBuildingUser className="h-5 w-5"/>,
+        },
+      ]
+    },
+    {
+      label: 'Gestión de existencias',
+      icon: <FaListCheck className="h-5 w-5"/>,
+      children: [
+        {
+          label: 'Entradas',
+          href: '/dashboard/existencias/entradas',
+          icon: <FaTruckArrowRight className="h-5 w-5"/>,
+        },
+        {
+          label: 'Salidas / Facturación',
+          href: '/dashboard/existencias/salidas',
+          icon: <FaTruckArrowRight className="h-5 w-5" style={{ transform: 'rotateY(180deg)' }}/>,
+        }
+      ]
+    },
+    {
+      label: 'Gestión de usuarios',
+      icon: <FaUsersGear className="h-5 w-5"/>,
+      children: [
+        {
+          label: 'Usuarios',
+          href: '/dashboard/usuarios/usuarios',
           icon: <FaUserCog className="h-5 w-5"/>,
         },
         {
-          label: 'Estudios y capacitación',
-          href: '/dashboard/legajo/estudios',
-          icon: <FaUserGraduate className="h-5 w-5"/>,
-        },
-        {
-          label: 'Bonificaciones personales',
-          href: '/dashboard/legajo/bonificacionesP',
-          icon: <GiReceiveMoney className="h-5 w-5"/>,
-        },
-        {
-          label: 'Bonificaciones familiares',
-          href: '/dashboard/legajo/bonificacionesF',
-          icon: <GrMoney className="h-5 w-5"/>,
-        },
-        {
-          label: 'Experiencia laboral',
-          href: '/dashboard/legajo/experiencia',
-          icon: <PiPathBold className="h-5 w-5"/>,
-        },
-        {
-          label: 'Ficha de evaluación',
-          href: '/dashboard/legajo/ficha-evaluacion',
-          icon: <HiClipboardDocumentList className="h-5 w-5"/>,
-        },
-        {
-          label: 'Méritos',
-          href: '/dashboard/legajo/meritos',
-          icon: <GiDiploma className="h-5 w-5"/>,
-        },
-        {
-          label: 'Discapacidad',
-          href: '/dashboard/legajo/discapacidad',
-          icon: <TbDisabled className="h-5 w-5"/>,
-        },
-        {
-          label: 'Acta de entrega',
-          href: '/dashboard/legajo/acta-entrega',
-          icon: <FaBook className="h-5 w-5"/>,
-        },
-        {
-          label: 'Constancia de pagos de haberes y descuentos',
-          href: '/dashboard/legajo/pagos',
-          icon: <Receipt className="h-5 w-5"/>,
+          label: 'Roles',
+          href: '/dashboard/usuarios/roles',
+          icon: <FaUserShield className="h-5 w-5"/>,
         },
       ]
-    }
+    },
   ]
 }
 
 export const SIDEBAR_USER_HELP: SidebarMenu = {
-  title: 'Ayuda',
+  title: 'Configuraciones',
   options: [
     {
-      label: 'Apoyo',
-      href: '/dashboard/apoyo',
+      label: 'Cuenta',
+      href: '/dashboard/cuenta',
       icon: <RiUserVoiceFill className="h-5 w-5"/>,
     },
     {
-      label: 'Configuración',
+      label: 'Configuración general',
       href: '/dashboard/configuracion',
       icon: <IoSettings className="h-5 w-5"/>,
     },
