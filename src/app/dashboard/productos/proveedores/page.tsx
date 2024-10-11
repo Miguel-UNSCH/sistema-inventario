@@ -143,7 +143,7 @@ function Page() {
   return (
     <FormContainer title="PROVEEDORES">
       <div className="flex justify-between gap-4">
-        <DialogForm textButton="Agregar Producto" titleDialog="AGREGAR PRODUCTO" descriptionDialog="Agrega un producto">
+        <DialogForm textButton="Agregar un proveedor" titleDialog="REGISTRO DE PROVEEDORES" descriptionDialog="Agrega un nuevo proveedor">
           <FormSupplier />
         </DialogForm>
       </div>

@@ -38,7 +38,6 @@ export const personaJuridicaSchema = z.object({
 export const categorySchema = z.object({
   category: z.string().min(1, "El nombre de la categoría es obligatorio"),
   description: z.string().optional(),
-  createdById: z.string().min(1, "La categoría es obligatoria"),
 });
 
 export const productSchema = z.object({
@@ -50,7 +49,9 @@ export const productSchema = z.object({
     .min(0.01, "El precio debe ser al menos 0.01"),
   stock: z.string() // Cambia aquí a z.number() también
     .regex(/^\d+$/, "Las reservas deben de ser un número"),
-  category: z.string().min(1, "La categoría es obligatoria"),
+  category: z.enum(["Electrónica", "Vestimenta", "Muebles"], {
+    invalid_type_error: "La categoría es obligatoria",
+  }),
 });
 
 export const supplierSchema = z.object({

@@ -35,7 +35,7 @@ export function FormCategory() {
                         <FormItem>
                             <FormLabel>Categoria del Producto:</FormLabel>
                             <FormControl>
-                                <Input placeholder="Ctegoria del Producto" {...field} />
+                                <Input placeholder="Ejemplo: Eléctronica" {...field} />
                             </FormControl>
                             <FormMessage className="text-end" />
                         </FormItem>

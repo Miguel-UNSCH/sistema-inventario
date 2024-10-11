@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { productSchema } from "@/utils/zod/schemas";
-import { createProduct } from "@/lib/actions";
+import { SelectFilter } from "@/components/select/select-filter"; // Importa el nuevo componente
+
+const categories = [
+    { value: "Electrónica", label: "Electrónica" },
+    { value: "Vestimenta", label: "Vestimenta" },
+    { value: "Muebles", label: "Muebles" }
+]; // Array de categorías actualizado
 
 export function FormProduct() {
     const form = useForm<z.infer<typeof productSchema>>({
@@ -23,7 +29,7 @@ export function FormProduct() {
     });
 
     function onSubmit(values: z.infer<typeof productSchema>) {
-        createProduct(values)
+        console.log(values);
     }
 
     return (
@@ -31,7 +37,7 @@ export function FormProduct() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
-                    name="productName" // Cambié 'firstName' a 'ProductName'
+                    name="productName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre del Producto:</FormLabel>
@@ -44,7 +50,7 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="code" // Cambié 'lastName' a 'code'
+                    name="code"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Código:</FormLabel>
@@ -57,7 +63,7 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="descripción" // Cambié 'identifier' a 'descripción'
+                    name="descripción"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Descripción:</FormLabel>
@@ -70,7 +76,7 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="price" // Asegúrate de que el nombre coincide con tu esquema
+                    name="price"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Precio:</FormLabel>
@@ -83,12 +89,12 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="stock" // Asegúrate de que el nombre coincide con tu esquema
+                    name="stock"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Reservas:</FormLabel>
                             <FormControl>
-                                <Input placeholder="Número de reservas"  {...field} />
+                                <Input placeholder="Número de reservas" {...field} />
                             </FormControl>
                             <FormMessage className="text-end" />
                         </FormItem>
@@ -96,14 +102,18 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="category" // Cambia 'address' a 'category'
+                    name="category"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Categoría:</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Categoría del producto" {...field} />
-                            </FormControl>
-                            <FormMessage className="text-end" />
+                        <FormLabel className="text-white">Categoría:</FormLabel>
+                        <FormControl>
+                            <SelectFilter
+                            options={categories}
+                            placeholder="Selecciona una categoría"
+                            {...field} // Esto pasa `value` y `onChange`
+                            />
+                        </FormControl>
+                        <FormMessage className="text-end text-white" />
                         </FormItem>
                     )}
                 />

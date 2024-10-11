@@ -25,13 +25,14 @@ export function DialogForm({ variant, className, textButton, titleDialog, descri
       </DialogTrigger>
       <DialogContent className={`sm:max-w-[425px] ${className}`}>
         <DialogHeader>
-          <DialogTitle>{titleDialog}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-center">{titleDialog}</DialogTitle>
+          <DialogDescription className="text-center">
             {descriptionDialog}
           </DialogDescription>
         </DialogHeader>
-        { children }
+        {children}
       </DialogContent>
     </Dialog>
   )
 }
+

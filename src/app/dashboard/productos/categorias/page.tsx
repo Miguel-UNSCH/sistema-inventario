@@ -108,7 +108,7 @@ function Page() {
   return (
     <FormContainer title="CATEGORIAS">
       <div className="flex justify-between gap-4">
-        <DialogForm textButton="Agregar Categoria" titleDialog="AGREGAR CATEGORIA" descriptionDialog="Agregar la categoria">
+        <DialogForm textButton="Agregar una categoria" titleDialog="REGISTRO DE CATEGORIA" descriptionDialog="Agrega una nueva categoria">
           <FormCategory />
         </DialogForm>
       </div>
