@@ -55,29 +55,20 @@ export const productSchema = z.object({
 });
 
 export const supplierSchema = z.object({
-  supplierName: z.string()
-    .min(2, "El nombre del proveedor es obligatorio")
-    .regex(/^[a-zA-Z\s]+$/, "El nombre solo puede contener letras y espacios"),
-
+  supplierName: z.string().nonempty("El nombre del proveedor es requerido."),
   ruc: z.string()
-    .length(11, "El RUC debe tener 11 dígitos")
-    .regex(/^\d+$/, "El RUC debe ser un número"),
-
+    .length(11, "El RUC debe tener 11 caracteres.")
+    .regex(/^\d+$/, "El RUC debe contener solo números."),
   email: z.string()
-    .email("El correo electrónico no es válido"),
-
+    .email("El correo electrónico no es válido."),
   phone: z.string()
-    .min(9, "El teléfono debe tener al menos 9 dígitos")
-    .max(15, "El teléfono no puede tener más de 15 dígitos")
-    .regex(/^\d+$/, "El teléfono debe ser un número"),
-
-  address: z.string()
-    .min(5, "La dirección es obligatoria"),
-
+    .regex(/^\d+$/, "El teléfono solo puede contener números")
+    .min(9, "El teléfono debe tener al menos 9 dígitos"),
+  address: z.string().nonempty("La dirección es requerida."),
   productsSupplied: z.array(
     z.object({
-      productName: z.string().min(1, "El nombre del producto es obligatorio"),
-      productCode: z.string().min(1, "El código del producto es obligatorio"),
+      productName: z.string().nonempty("El nombre del producto es requerido."),
+      productCode: z.string().nonempty("El código del producto es requerido."),
     })
-  ).min(1, "Debe haber al menos un producto suministrado"),
+  ).min(1, "Se debe agregar al menos un producto."),
 });
