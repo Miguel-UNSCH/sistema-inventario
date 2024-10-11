@@ -27,6 +27,19 @@ CREATE TABLE "PersonaJuridica" (
 );
 
 -- CreateTable
+CREATE TABLE "Productos" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "ProductName" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "descripción" TEXT,
+    "price" REAL NOT NULL,
+    "stock" INTEGER NOT NULL,
+    "category" TEXT NOT NULL,
+    "createdById" INTEGER,
+    CONSTRAINT "Productos_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
@@ -50,6 +63,15 @@ CREATE UNIQUE INDEX "PersonaJuridica_companyEmail_key" ON "PersonaJuridica"("com
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PersonaJuridica_ruc_companyEmail_key" ON "PersonaJuridica"("ruc", "companyEmail");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Productos_code_key" ON "Productos"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Productos_category_key" ON "Productos"("category");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Productos_code_category_key" ON "Productos"("code", "category");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

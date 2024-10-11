@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db"
 
 export async function GET() {
-  return NextResponse.json({message: 'OK'});
+  return NextResponse.json({ message: 'OK' });
 }
 
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    
+
     const userFound = await db.personaNatural.findUnique({
       where: {
         identifier: data.identifier,
@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({message: 'Cliente creado con éxito', status: 200});
+    return NextResponse.json({ message: 'Cliente creado con éxito', status: 200 });
   } catch (error) {
-    return NextResponse.json({message: error})
+    return NextResponse.json({ message: error })
   }
 }

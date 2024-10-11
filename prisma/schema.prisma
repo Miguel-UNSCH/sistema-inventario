@@ -40,10 +40,26 @@ model PersonaJuridica {
   @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
 }
 
+model Productos {
+  id          Int     @id @default(autoincrement())
+  ProductName String
+  code        String  @unique
+  description String?
+  price       String
+  stock       String
+  category    String
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById Int?
+
+  @@unique([code, category]) // Garantiza unicidad en el código del producto
+}
+
+
 model User {
   id    Int    @id @default(autoincrement())
   name  String
   email String  @unique
   personaNaturals PersonaNatural[]
   personaJuridicas  PersonaJuridica[]
+  productos         Productos[]
 }
