@@ -3,35 +3,36 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import TextLabelInput from "../input/input-type2"
 
-export function DialogForm() {
+interface DialogContentProps {
+  variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost"
+  className?: string
+  textButton: string
+  titleDialog: string
+  descriptionDialog?: string
+  children: React.ReactNode
+}
+
+export function DialogForm({ variant, className, textButton, titleDialog, descriptionDialog, children }: DialogContentProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button variant={variant}>{textButton}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={`sm:max-w-[425px] ${className}`}>
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when done.
+          <DialogTitle className="text-center">{titleDialog}</DialogTitle>
+          <DialogDescription className="text-center">
+            {descriptionDialog}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-            <TextLabelInput id="apellido" label="Apellido" isRequired/>
-            <TextLabelInput id="apellido" label="Apellido" isRequired/>
-            <TextLabelInput id="apellido" label="Apellido" isRequired/>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        {children}
       </DialogContent>
     </Dialog>
   )
 }
+
