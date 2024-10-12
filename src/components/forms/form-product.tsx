@@ -107,7 +107,7 @@ export function FormProduct() {
                     name="category"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-white">Categoría:</FormLabel>
+                            <FormLabel>Categoría:</FormLabel>
                             <FormControl>
                                 <SelectFilter
                                     options={categories}

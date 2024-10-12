@@ -14,6 +14,7 @@ export async function createPersonaNatural(data: z.infer<typeof personaNaturalSc
 
   const resp = await res.json();
   console.log(resp);
+  return resp;
 }
 
 export async function createProduct(data: z.infer<typeof productSchema>) {

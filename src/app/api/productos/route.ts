@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return NextResponse.json({ message: 'Producto creado con éxito', status: 200 });
+        return NextResponse.json({ message: 'Producto creado con éxito' }, {status: 200});
     } catch (error) {
-        return NextResponse.json({ message: error })
+        return NextResponse.json({ message: error }, {status: 500} )
     }
 }
