@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { productSchema } from "@/utils/zod/schemas";
-import { SelectFilter } from "@/components/select/select-filter"; // Importa el nuevo componente
+import { Combobox } from "@/components/select/combobox";  // Importa el nuevo componente
 import { createProduct } from "@/lib/actions";
 
 const categories = [
@@ -24,14 +24,21 @@ const categories = [
     { value: "Muebles", label: "Muebles" }
 ]; // Array de categorías actualizado
 
+const suppliers = [
+    { value: "Proveedor A", label: "Proveedor A" },
+    { value: "Proveedor B", label: "Proveedor B" },
+    { value: "Proveedor C", label: "Proveedor C" },
+    { value: "Proveedor D", label: "Proveedor D" }
+]; // Opciones de proveedores
+
 export function FormProduct() {
     const form = useForm<z.infer<typeof productSchema>>({
         resolver: zodResolver(productSchema),
     });
 
     function onSubmit(values: z.infer<typeof productSchema>) {
-        createProduct(values)
-        console.log(values)
+        createProduct(values);
+        console.log(values);
     }
 
     return (
@@ -106,19 +113,37 @@ export function FormProduct() {
                     control={form.control}
                     name="category"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="flex items-center gap-4">
                             <FormLabel>Categoría:</FormLabel>
                             <FormControl>
-                                <SelectFilter
+                                <Combobox
                                     options={categories}
                                     placeholder="Selecciona una categoría"
                                     {...field} // Esto pasa `value` y `onChange`
                                 />
                             </FormControl>
-                            <FormMessage className="text-end text-white" />
+                            <FormMessage className="text-end" />
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name="supplier"
+                    render={({ field }) => (
+                        <FormItem className="flex items-center gap-4">
+                            <FormLabel>Proveedor:</FormLabel>
+                            <FormControl>
+                                <Combobox
+                                    options={suppliers}
+                                    placeholder="Selecciona un proveedor"
+                                    {...field} // Esto pasa `value` y `onChange`
+                                />
+                            </FormControl>
+                            <FormMessage className="text-end" />
+                        </FormItem>
+                    )}
+                />
+
                 <div className="flex justify-center py-3">
                     <Button type="submit">Guardar</Button>
                 </div>

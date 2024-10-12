@@ -58,13 +58,14 @@ model Producto {
   price       String
   stock       String
   category    String
+  supplier    String  // Añadido campo proveedor
   createdBy   User?   @relation(fields: [createdById], references: [id])
   createdById String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([code, category]) // Garantiza unicidad en el código del producto
+  @@unique([code, category, supplier]) // Modificado para garantizar unicidad en combinación de código, categoría y proveedor
 }
 
 // Tablas de usuarios, sesiones, roles y permisos

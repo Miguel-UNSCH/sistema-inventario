@@ -10,7 +10,6 @@ const data = [
     email: "contacto@proveedora.com",
     phone: "987654321",
     address: "Av. Principal 123, Ciudad A",
-    productsSupplied: "Producto 1, Producto 2, Producto 3",
   },
   {
     supplierName: "Proveedor B",
@@ -18,7 +17,6 @@ const data = [
     email: "info@proveedorb.com",
     phone: "976543210",
     address: "Calle Secundaria 456, Ciudad B",
-    productsSupplied: "Producto 4, Producto 5",
   },
   {
     supplierName: "Proveedor C",
@@ -26,7 +24,6 @@ const data = [
     email: "contacto@proveedorc.com",
     phone: "965432109",
     address: "Pasaje Tercero 789, Ciudad C",
-    productsSupplied: "Producto 6",
   },
   {
     supplierName: "Proveedor D",
@@ -34,7 +31,6 @@ const data = [
     email: "sales@proveedord.com",
     phone: "954321098",
     address: "Av. Libertad 321, Ciudad D",
-    productsSupplied: "Producto 7, Producto 8",
   },
   {
     supplierName: "Proveedor E",
@@ -42,7 +38,6 @@ const data = [
     email: "support@proveedore.com",
     phone: "943210987",
     address: "Calle Ejemplo 654, Ciudad E",
-    productsSupplied: "Producto 9, Producto 10",
   },
   {
     supplierName: "Proveedor F",
@@ -50,7 +45,6 @@ const data = [
     email: "contact@proveedorf.com",
     phone: "932109876",
     address: "Calle Prueba 987, Ciudad F",
-    productsSupplied: "Producto 11, Producto 12",
   },
   {
     supplierName: "Proveedor G",
@@ -58,7 +52,6 @@ const data = [
     email: "info@proveedorg.com",
     phone: "921098765",
     address: "Calle Principal 321, Ciudad G",
-    productsSupplied: "Producto 13, Producto 14",
   },
   {
     supplierName: "Proveedor H",
@@ -66,7 +59,6 @@ const data = [
     email: "sales@proveedorh.com",
     phone: "910987654",
     address: "Calle Industrial 654, Ciudad H",
-    productsSupplied: "Producto 15",
   },
   {
     supplierName: "Proveedor I",
@@ -74,7 +66,6 @@ const data = [
     email: "contacto@proveedori.com",
     phone: "909876543",
     address: "Calle Comercio 987, Ciudad I",
-    productsSupplied: "Producto 16, Producto 17",
   },
   {
     supplierName: "Proveedor J",
@@ -82,7 +73,6 @@ const data = [
     email: "info@proveedorj.com",
     phone: "898765432",
     address: "Calle Central 123, Ciudad J",
-    productsSupplied: "Producto 18, Producto 19",
   },
   {
     supplierName: "Proveedor K",
@@ -90,7 +80,6 @@ const data = [
     email: "sales@proveedork.com",
     phone: "876543210",
     address: "Calle Norte 456, Ciudad K",
-    productsSupplied: "Producto 20",
   },
   {
     supplierName: "Proveedor L",
@@ -98,7 +87,6 @@ const data = [
     email: "contacto@proveedorl.com",
     phone: "865432109",
     address: "Calle Este 789, Ciudad L",
-    productsSupplied: "Producto 21, Producto 22",
   },
   {
     supplierName: "Proveedor M",
@@ -106,7 +94,6 @@ const data = [
     email: "info@proveedorm.com",
     phone: "854321098",
     address: "Calle Sur 321, Ciudad M",
-    productsSupplied: "Producto 23",
   },
   {
     supplierName: "Proveedor N",
@@ -114,7 +101,6 @@ const data = [
     email: "support@proveedorn.com",
     phone: "843210987",
     address: "Calle Oeste 654, Ciudad N",
-    productsSupplied: "Producto 24, Producto 25",
   },
   {
     supplierName: "Proveedor O",
@@ -122,7 +108,6 @@ const data = [
     email: "contact@proveedoro.com",
     phone: "832109876",
     address: "Calle 6 987, Ciudad O",
-    productsSupplied: "Producto 26, Producto 27",
   },
 ];
 
@@ -134,7 +119,6 @@ const headers = [
   { key: "email", label: "Correo Electrónico" },
   { key: "phone", label: "Teléfono" },
   { key: "address", label: "Dirección" },
-  { key: "productsSupplied", label: "Productos Suministrados" },
 ];
 
 
