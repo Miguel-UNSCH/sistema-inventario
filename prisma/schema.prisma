@@ -40,7 +40,7 @@ model PersonaJuridica {
   @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
 }
 
-model Productos {
+model Producto {
   id          Int     @id @default(autoincrement())
   ProductName String
   code        String  @unique
@@ -54,12 +54,11 @@ model Productos {
   @@unique([code, category]) // Garantiza unicidad en el código del producto
 }
 
-
 model User {
   id    Int    @id @default(autoincrement())
   name  String
   email String  @unique
   personaNaturals PersonaNatural[]
   personaJuridicas  PersonaJuridica[]
-  productos         Productos[]
+  productos         Producto[]
 }

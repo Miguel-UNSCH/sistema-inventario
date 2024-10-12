@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
 
-        const userFound = await db.productos.findUnique({
+        const userFound = await db.producto.findUnique({
             where: {
                 code: data.code,
             },
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
         // Aquí se hace la carga a la base de datos
 
-        await db.productos.create({
+        await db.producto.create({
             data: {
                 ProductName: data.productName,
                 code: data.code,
