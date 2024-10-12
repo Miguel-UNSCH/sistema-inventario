@@ -11,6 +11,7 @@ const data = [
     price: 1200.00,
     stock: 50,
     category: "Electrónica",
+    supplier: "Proveedor A" // Añadido proveedor
   },
   {
     ProductName: "Smartphone Samsung",
@@ -19,6 +20,7 @@ const data = [
     price: 800.00,
     stock: 30,
     category: "Electrónica",
+    supplier: "Proveedor B" // Añadido proveedor
   },
   {
     ProductName: "Silla de Oficina",
@@ -27,6 +29,7 @@ const data = [
     price: 150.00,
     stock: 100,
     category: "Muebles",
+    supplier: "Proveedor C" // Añadido proveedor
   },
   {
     ProductName: "Mesa de Comedor",
@@ -35,6 +38,7 @@ const data = [
     price: 300.00,
     stock: 20,
     category: "Muebles",
+    supplier: "Proveedor D" // Añadido proveedor
   },
   {
     ProductName: "Teclado Mecánico",
@@ -43,6 +47,7 @@ const data = [
     price: 100.00,
     stock: 75,
     category: "Accesorios",
+    supplier: "Proveedor A" // Añadido proveedor
   },
   {
     ProductName: "Auriculares Bluetooth",
@@ -51,6 +56,7 @@ const data = [
     price: 200.00,
     stock: 40,
     category: "Electrónica",
+    supplier: "Proveedor B" // Añadido proveedor
   },
   {
     ProductName: "Reloj Inteligente",
@@ -59,6 +65,7 @@ const data = [
     price: 250.00,
     stock: 35,
     category: "Electrónica",
+    supplier: "Proveedor C" // Añadido proveedor
   },
   {
     ProductName: "Cámara Digital",
@@ -67,6 +74,7 @@ const data = [
     price: 900.00,
     stock: 15,
     category: "Fotografía",
+    supplier: "Proveedor D" // Añadido proveedor
   },
   {
     ProductName: "Impresora Multifuncional",
@@ -75,6 +83,7 @@ const data = [
     price: 300.00,
     stock: 25,
     category: "Electrónica",
+    supplier: "Proveedor A" // Añadido proveedor
   },
   {
     ProductName: "Lámpara LED",
@@ -83,6 +92,7 @@ const data = [
     price: 50.00,
     stock: 60,
     category: "Iluminación",
+    supplier: "Proveedor B" // Añadido proveedor
   },
   {
     ProductName: "Bicicleta de Montaña",
@@ -91,6 +101,7 @@ const data = [
     price: 500.00,
     stock: 20,
     category: "Deportes",
+    supplier: "Proveedor C" // Añadido proveedor
   },
   {
     ProductName: "Cafetera Eléctrica",
@@ -99,6 +110,7 @@ const data = [
     price: 80.00,
     stock: 30,
     category: "Electrodomésticos",
+    supplier: "Proveedor D" // Añadido proveedor
   },
   {
     ProductName: "Robot Aspirador",
@@ -107,6 +119,7 @@ const data = [
     price: 400.00,
     stock: 10,
     category: "Electrodomésticos",
+    supplier: "Proveedor A" // Añadido proveedor
   },
   {
     ProductName: "Set de Cuchillos",
@@ -115,6 +128,7 @@ const data = [
     price: 120.00,
     stock: 50,
     category: "Cocina",
+    supplier: "Proveedor B" // Añadido proveedor
   },
   {
     ProductName: "Mochila para Laptop",
@@ -123,9 +137,9 @@ const data = [
     price: 70.00,
     stock: 45,
     category: "Accesorios",
+    supplier: "Proveedor C" // Añadido proveedor
   },
 ];
-
 
 const headers = [
   { key: "ProductName", label: "Nombre Producto" },
@@ -133,8 +147,10 @@ const headers = [
   { key: "descripción", label: "Descripción" },
   { key: "price", label: "Precio" },
   { key: "stock", label: "Reservas" },
-  { key: "category", label: "Categoria" },
+  { key: "category", label: "Categoría" },
+  { key: "supplier", label: "Proveedor" }, // Campo de proveedor añadido
 ];
+
 
 function Page() {
   return (
