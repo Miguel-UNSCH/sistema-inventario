@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         email: data.email,
         phone: data.phone,
         address: data.address,
-        createdById: 1,
+        createdById: "7ec08748-a4ef-4560-b635-e8743f84f1ff",
       },
     });
 

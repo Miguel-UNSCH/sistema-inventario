@@ -72,3 +72,8 @@ export const supplierSchema = z.object({
     })
   ).min(1, "Se debe agregar al menos un producto."),
 });
+
+export const roleSchema = z.object({
+  role: z.string().min(3, "El nombre del rol es obligatorio"),
+  description: z.string().optional(),
+})

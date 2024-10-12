@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -7,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import React from "react"
 
 interface DialogContentProps {
   variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost"
@@ -15,13 +19,20 @@ interface DialogContentProps {
   titleDialog: string
   descriptionDialog?: string
   children: React.ReactNode
+  open: boolean
+  setOpen: (value: boolean) => void
+  setItemEditing: (value: null) => void
 }
 
-export function DialogForm({ variant, className, textButton, titleDialog, descriptionDialog, children }: DialogContentProps) {
+export function DialogForm({ variant, className, textButton, titleDialog, descriptionDialog, children, open, setOpen, setItemEditing }: DialogContentProps) {
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={variant}>{textButton}</Button>
+        <Button onClick={ () => {
+          setOpen(true)
+          setItemEditing(null)
+        }} variant={variant}>{textButton}</Button>
       </DialogTrigger>
       <DialogContent className={`sm:max-w-[425px] ${className}`}>
         <DialogHeader>
@@ -30,7 +41,9 @@ export function DialogForm({ variant, className, textButton, titleDialog, descri
             {descriptionDialog}
           </DialogDescription>
         </DialogHeader>
-        {children}
+        {
+          children
+        }
       </DialogContent>
     </Dialog>
   )

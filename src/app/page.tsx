@@ -28,7 +28,7 @@ export default function LandingPage() {
             ¡Bienvenido a{" "}
             <span className="inline-block text-green-500">
               <Degraded
-                text="ReenFabric"
+                text="SysInv"
                 fromColor="var(--foreground)"
                 toColor="var(--primary)"
                 fontWeight="extrabold"
@@ -42,7 +42,7 @@ export default function LandingPage() {
             <span className="text-white bg-green-400 rounded-sm inline-block">Simplifica</span> tu Trabajo
           </h1>
           <p className="text-lg text-card-foreground mb-8">
-            En <span className="font-semibold text-green-500">ReenFabric</span>, te ofrecemos una solución eficiente para gestionar tus inventarios. Organiza tus productos de manera sencilla.
+            Te ofrecemos una solución eficiente para gestionar tus inventarios. Organiza tus productos de manera sencilla.
             <span className="text-orange-500 font-semibold"> ¡Empieza a mejorar tu flujo de trabajo hoy mismo!</span>
           </p>
           <div className="flex space-x-4">

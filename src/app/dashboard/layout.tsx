@@ -1,6 +1,7 @@
 import Dashboard from "@/components/dashboard";
 import { SIDEBAR_USER_HELP, SIDEBAR_USER_MENU } from "@/utils/sidebar/sidebar-user";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "Panel de control - usuario",
@@ -12,6 +13,9 @@ export default function DashboardLayout({
 }>) {
 
   return (
-    <Dashboard roleUser="member" sidebarOptions={[SIDEBAR_USER_MENU, SIDEBAR_USER_HELP]}>{children}</Dashboard>
+    <>
+      <Dashboard roleUser="member" sidebarOptions={[SIDEBAR_USER_MENU, SIDEBAR_USER_HELP]}>{children}</Dashboard>
+      <Toaster />
+    </>
   );
 }

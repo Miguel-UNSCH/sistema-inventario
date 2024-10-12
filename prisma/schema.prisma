@@ -10,6 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Tablas de clientes
+
 model PersonaNatural {
   id         Int     @id @default(autoincrement())
   firstName  String
@@ -19,7 +21,10 @@ model PersonaNatural {
   phone      String
   address    String?
   createdBy  User?   @relation(fields: [createdById], references: [id])
-  createdById Int?
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([identifier, email]) // Garantiza unicidad en identifier y email
 }
@@ -35,10 +40,15 @@ model PersonaJuridica {
   companyAddress        String?
   companyType           String
   createdBy             User?   @relation(fields: [createdById], references: [id])
-  createdById           Int?
+  createdById           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
 }
+
+// Tablas de productos
 
 model Producto {
   id          Int     @id @default(autoincrement())
@@ -49,16 +59,96 @@ model Producto {
   stock       String
   category    String
   createdBy   User?   @relation(fields: [createdById], references: [id])
-  createdById Int?
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([code, category]) // Garantiza unicidad en el código del producto
 }
 
+// Tablas de usuarios, sesiones, roles y permisos
+
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String  @unique
+  id            String          @id @default(uuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  user          String
+  password       String
+  accounts      Account[]
+  sessions      Session[]
+  roleId        String?         // Relación con el rol
+  role          Role?           @relation(fields: [roleId], references: [id], onDelete: SetNull)
+
   personaNaturals PersonaNatural[]
   personaJuridicas  PersonaJuridica[]
   productos         Producto[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@unique([provider, providerAccountId])
+}
+ 
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  users       User[]       // Relación de uno a muchos (Un rol puede estar asociado a muchos usuarios)
+  permissions Permission[] // Relación de uno a muchos (Un rol puede tener varios permisos)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  action    String   // Puede ser 'create', 'read', 'update', 'delete'
+  module    String   // El módulo al que se aplica el permiso
+  roleId    String   // Relación con la tabla de Roles
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
