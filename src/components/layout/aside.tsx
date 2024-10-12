@@ -34,7 +34,7 @@ function Aside({
             <span className="text-primary">S</span>
           ) : (
             <h1 translate="no">
-              Sys<span className="text-primary">Lab</span>
+              Sys<span className="text-primary">Inv</span>
             </h1>
           )}
         </div>

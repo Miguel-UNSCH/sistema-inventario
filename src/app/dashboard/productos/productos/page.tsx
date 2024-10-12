@@ -129,7 +129,7 @@ const data = [
 
 const headers = [
   { key: "ProductName", label: "Nombre Producto" },
-  { key: "code", label: "Codigó" },
+  { key: "code", label: "Código" },
   { key: "descripción", label: "Descripción" },
   { key: "price", label: "Precio" },
   { key: "stock", label: "Reservas" },
