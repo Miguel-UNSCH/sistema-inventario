@@ -48,10 +48,11 @@ model Producto {
   price       String
   stock       String
   category    String
+  supplier    String  // Añadido campo proveedor
   createdBy   User?   @relation(fields: [createdById], references: [id])
   createdById Int?
 
-  @@unique([code, category]) // Garantiza unicidad en el código del producto
+  @@unique([code, category, supplier]) // Modificado para garantizar unicidad en combinación de código, categoría y proveedor
 }
 
 model User {

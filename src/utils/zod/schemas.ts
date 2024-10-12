@@ -44,15 +44,32 @@ export const productSchema = z.object({
   productName: z.string().min(1, "El nombre del producto es obligatorio"),
   code: z.string().min(1, "El código es obligatorio"),
   description: z.string().optional(),
-  price: z.string() // Cambia aquí a z.number()
-    .regex(/^\d+$/, "El precio debe ser un número")
-    .min(0.01, "El precio debe ser al menos 0.01"),
-  stock: z.string() // Cambia aquí a z.number() también
-    .regex(/^\d+$/, "Las reservas deben de ser un número"),
+  price: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "El precio debe ser un número válido") // Acepta números decimales con hasta 2 decimales
+    .refine((value) => parseFloat(value) >= 0.01, {
+      message: "El precio debe ser al menos 0.01",
+    }),
+  stock: z
+    .string()
+    .regex(/^\d+$/, "Las reservas deben ser un número")
+    .refine((value) => parseInt(value) >= 1, {
+      message: "Las reservas deben ser al menos 1",
+    }),
   category: z.enum(["Electrónica", "Vestimenta", "Muebles"], {
     invalid_type_error: "La categoría es obligatoria",
   }),
+  supplier: z.enum([
+    "Proveedor A",
+    "Proveedor B",
+    "Proveedor C",
+    "Proveedor D"
+  ], {
+    invalid_type_error: "El proveedor es obligatorio",
+  }),
 });
+
+
 
 export const supplierSchema = z.object({
   supplierName: z.string().nonempty("El nombre del proveedor es requerido."),
@@ -65,10 +82,4 @@ export const supplierSchema = z.object({
     .regex(/^\d+$/, "El teléfono solo puede contener números")
     .min(9, "El teléfono debe tener al menos 9 dígitos"),
   address: z.string().nonempty("La dirección es requerida."),
-  productsSupplied: z.array(
-    z.object({
-      productName: z.string().nonempty("El nombre del producto es requerido."),
-      productCode: z.string().nonempty("El código del producto es requerido."),
-    })
-  ).min(1, "Se debe agregar al menos un producto."),
 });
