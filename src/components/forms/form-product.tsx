@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { productSchema } from "@/utils/zod/schemas";
 import { SelectFilter } from "@/components/select/select-filter"; // Importa el nuevo componente
+import { createProduct } from "@/lib/actions";
 
 const categories = [
     { value: "Electrónica", label: "Electrónica" },
@@ -29,7 +30,8 @@ export function FormProduct() {
     });
 
     function onSubmit(values: z.infer<typeof productSchema>) {
-        console.log(values);
+        createProduct(values)
+        console.log(values)
     }
 
     return (
@@ -63,7 +65,7 @@ export function FormProduct() {
                 />
                 <FormField
                     control={form.control}
-                    name="descripción"
+                    name="description"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Descripción:</FormLabel>
@@ -105,15 +107,15 @@ export function FormProduct() {
                     name="category"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel className="text-white">Categoría:</FormLabel>
-                        <FormControl>
-                            <SelectFilter
-                            options={categories}
-                            placeholder="Selecciona una categoría"
-                            {...field} // Esto pasa `value` y `onChange`
-                            />
-                        </FormControl>
-                        <FormMessage className="text-end text-white" />
+                            <FormLabel className="text-white">Categoría:</FormLabel>
+                            <FormControl>
+                                <SelectFilter
+                                    options={categories}
+                                    placeholder="Selecciona una categoría"
+                                    {...field} // Esto pasa `value` y `onChange`
+                                />
+                            </FormControl>
+                            <FormMessage className="text-end text-white" />
                         </FormItem>
                     )}
                 />

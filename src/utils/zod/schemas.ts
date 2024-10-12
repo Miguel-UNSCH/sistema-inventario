@@ -43,7 +43,7 @@ export const categorySchema = z.object({
 export const productSchema = z.object({
   productName: z.string().min(1, "El nombre del producto es obligatorio"),
   code: z.string().min(1, "El código es obligatorio"),
-  descripción: z.string().optional(),
+  description: z.string().optional(),
   price: z.string() // Cambia aquí a z.number()
     .regex(/^\d+$/, "El precio debe ser un número")
     .min(0.01, "El precio debe ser al menos 0.01"),
