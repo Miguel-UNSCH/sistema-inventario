@@ -13,12 +13,12 @@ const headers = [
 async function Page() {
 
   const API_URL = process.env.HOST_URL + '/api/roles'
-  const res = await fetch(API_URL, {cache: 'no-store'})
+  const res = await fetch(API_URL, { cache: 'no-store' })
   const roles = await res.json()
 
   return (
     <FormContainer title="Roles">
-      <RoleContainer data={roles} headers={headers}/>
+      <RoleContainer data={roles} headers={headers} />
     </FormContainer>
   );
 }

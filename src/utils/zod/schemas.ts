@@ -46,7 +46,7 @@ export const productSchema = z.object({
   description: z.string().optional(),
   price: z
     .string()
-    .regex(/^\d+(\.\d{1,2})?$/, "El precio debe ser un número válido") // Acepta números decimales con hasta 2 decimales
+    .regex(/^\d+$/, "El precio debe ser un número válido") // Acepta números decimales con hasta 2 decimales
     .refine((value) => parseFloat(value) >= 0.01, {
       message: "El precio debe ser al menos 0.01",
     }),
@@ -56,33 +56,25 @@ export const productSchema = z.object({
     .refine((value) => parseInt(value) >= 1, {
       message: "Las reservas deben ser al menos 1",
     }),
-  category: z.enum(["Electrónica", "Vestimenta", "Muebles"], {
-    invalid_type_error: "La categoría es obligatoria",
-  }),
-  supplier: z.enum([
-    "Proveedor A",
-    "Proveedor B",
-    "Proveedor C",
-    "Proveedor D"
-  ], {
-    invalid_type_error: "El proveedor es obligatorio",
-  }),
+  category: z.string().min(1, "La categoría es obligatoria"),
+  supplier: z.string().min(1, "El proveedor es obligatorio"),
 });
-
-
 
 export const supplierSchema = z.object({
-  supplierName: z.string().nonempty("El nombre del proveedor es requerido."),
+  supplierName: z.string()
+    .min(3, { message: "El nombre es obligatorio" }), // Valida que el nombre del proveedor tenga al menos 3 caracteres
   ruc: z.string()
-    .length(11, "El RUC debe tener 11 caracteres.")
-    .regex(/^\d+$/, "El RUC debe contener solo números."),
+    .length(11, "El RUC debe tener 11 caracteres.")  // Valida que el RUC tenga exactamente 11 caracteres
+    .regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"), // Valida que el RUC sea un número de 11 dígitos
   email: z.string()
-    .email("El correo electrónico no es válido."),
+    .email("El correo electrónico no es válido."),   // Valida que el formato del correo electrónico sea correcto
   phone: z.string()
-    .regex(/^\d+$/, "El teléfono solo puede contener números")
-    .min(9, "El teléfono debe tener al menos 9 dígitos"),
-  address: z.string().nonempty("La dirección es requerida."),
+    .regex(/^\d+$/, "El teléfono solo puede contener números") // Valida que el teléfono solo contenga números
+    .min(9, "El teléfono debe tener al menos 9 dígitos"),      // Valida que el teléfono tenga al menos 9 dígitos
+  address: z.string()
+    .min(1, "La dirección es obligatorio"),            // Valida que la dirección no esté vacía
 });
+
 
 export const roleSchema = z.object({
   role: z.string().min(3, "El nombre del rol es obligatorio"),
