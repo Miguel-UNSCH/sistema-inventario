@@ -27,7 +27,7 @@ export interface GenericSelectProps extends SelectProps {
     value?: string;
 }
 
-export function Combobox({ options, placeholder, onChange, value, ...props }: GenericSelectProps) {
+export function Combobox({ options, placeholder, onChange, value }: GenericSelectProps) {
     const [open, setOpen] = React.useState(false)
 
     return (
@@ -47,11 +47,11 @@ export function Combobox({ options, placeholder, onChange, value, ...props }: Ge
             </PopoverTrigger>
             <PopoverContent className="w-[250px] p-0">
                 <Command>
-                    <CommandInput placeholder={`Search ${placeholder}...`} />
+                    <CommandInput className="my-1 border-0 ring-1 ring-border focus:ring-primary" placeholder={`Buscar ${placeholder}...`} />
                     <CommandList>
-                        <CommandEmpty>No option found.</CommandEmpty>
+                        <CommandEmpty>No se encontró.</CommandEmpty>
                         <CommandGroup>
-                            {options.map((option) => (
+                            {options && options.map((option) => (
                                 <CommandItem
                                     key={option.value}
                                     value={option.value}

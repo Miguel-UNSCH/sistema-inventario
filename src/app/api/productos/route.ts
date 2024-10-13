@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
                 price: data.price,
                 stock: data.stock,
                 category: data.category,
+                supplier: '',
                 createdById: "7ec08748-a4ef-4560-b635-e8743f84f1ff",
             },
         });

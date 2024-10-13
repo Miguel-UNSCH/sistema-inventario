@@ -76,7 +76,7 @@ model User {
   email         String?         @unique
   emailVerified DateTime?
   image         String?
-  user          String
+  user          String          @unique
   password       String
   accounts      Account[]
   sessions      Session[]
@@ -152,4 +152,6 @@ model Permission {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([roleId, module, action])  // Este índice asegura combinaciones únicas
 }

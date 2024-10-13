@@ -202,7 +202,13 @@ export default function CustomDataTable({
                       .filter((header) => visibleColumns.includes(header.key))
                       .map((header) => (
                         <TableCell key={header.key} className="whitespace-nowrap">
-                          {item[header.key]}
+                          {typeof item[header.key] === "string" && item[header.key].includes("\n") ? (
+                            // Reemplazar '\n' con <br> y usar dangerouslySetInnerHTML para renderizar el HTML
+                            <div dangerouslySetInnerHTML={{ __html: item[header.key].replace(/\n/g, "<br/>") }} />
+                          ) : (
+                            // Si no tiene saltos de línea, mostrar el contenido como de costumbre
+                            item[header.key]
+                          )}
                         </TableCell>
                       ))}
                     <TableCell className="whitespace-nowrap">
