@@ -75,8 +75,48 @@ export const supplierSchema = z.object({
     .min(1, "La dirección es obligatorio"),            // Valida que la dirección no esté vacía
 });
 
+// ======================= ROLES ESQUEMAS ==================
 
 export const roleSchema = z.object({
   role: z.string().min(3, "El nombre del rol es obligatorio"),
   description: z.string().optional(),
 })
+
+export const permissionSchema = z.object({
+  action: z.enum(['crear', 'leer', 'actualizar', 'eliminar'], {
+    required_error: 'El campo "acción" es obligatorio.',
+  }),
+  module: z.enum([
+    'inicio', 'clientes', 'reportes', 
+    'categorias', 'productos', 'proveedores',
+    'entradas', 'salidas',
+    'usuarios', 'roles'
+  ], {
+    required_error: 'El campo "módulos" es obligatorio.',
+  }),
+  roleId: z.string({required_error: "El campo rol es obligatorio"}).min(1, {
+    message: 'El campo "ID de rol" es obligatorio.',
+  }),
+});
+
+// ======================= USUARIOS ESQUEMAS ==================
+
+export const userSchema = z.object({
+  name: z.string({ required_error: "El nombre es obligatorio" }),
+  email: z.string().email({ message: "Debe ser un correo electrónico válido" }).optional(),
+  image: z.string().url({ message: "Debe ser una URL válida" }).optional().nullable(),
+  user: z.string({ required_error: "El usuario es obligatorio" }),
+  password: z.string({ required_error: "La contraseña es obligatoria" }),
+  roleId: z.string({required_error: "El campo rol es obligatorio"}).min(1, {
+    message: 'El campo "ID de rol" es obligatorio.',
+  }),
+  
+  // Relaciones opcionales
+  accounts: z.array(z.object({})).optional(),  // Relación con Account (definir esquema si es necesario)
+  sessions: z.array(z.object({})).optional(),  // Relación con Session
+  role: z.object({}).optional().nullable(),  // Relación opcional con Role
+  
+  personaNaturals: z.array(z.object({})).optional(),  // Relación con PersonaNatural
+  personaJuridicas: z.array(z.object({})).optional(),  // Relación con PersonaJuridica
+  productos: z.array(z.object({})).optional(),  // Relación con Producto
+});
