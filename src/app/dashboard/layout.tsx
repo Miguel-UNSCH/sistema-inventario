@@ -3,7 +3,6 @@ import { SIDEBAR_USER_HELP, SIDEBAR_USER_MENU } from "@/utils/sidebar/sidebar-us
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner"
 import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react"
 
 export const metadata: Metadata = {
   title: "Sistema gestor de inventario",
@@ -18,9 +17,9 @@ export default async function DashboardLayout({
   console.log(session);
 
   return (
-    <SessionProvider>
+    <>
       <Dashboard roleUser="member" sidebarOptions={[SIDEBAR_USER_MENU, SIDEBAR_USER_HELP]}>{children}</Dashboard>
       <Toaster />
-    </SessionProvider>
+    </>
   );
 }
