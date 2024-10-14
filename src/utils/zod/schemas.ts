@@ -113,7 +113,9 @@ export const userSchema = z.object({
   email: z.string().email({ message: "Debe ser un correo electrónico válido" }).optional(),
   image: z.string().url({ message: "Debe ser una URL válida" }).optional().nullable(),
   user: z.string({ required_error: "El usuario es obligatorio" }),
-  password: z.string({ required_error: "La contraseña es obligatoria" }),
+  password: z.string({ required_error: "La contraseña es obligatoria" })
+    .min(1, "La contraseña es obligatoria")
+    .min(8, "La contraseñ debe tener al menos 8 caracteres"),
   roleId: z.string({required_error: "El campo rol es obligatorio"}).min(1, {
     message: 'El campo "ID de rol" es obligatorio.',
   }),
@@ -127,3 +129,12 @@ export const userSchema = z.object({
   personaJuridicas: z.array(z.object({})).optional(),  // Relación con PersonaJuridica
   productos: z.array(z.object({})).optional(),  // Relación con Producto
 });
+
+// ======================= LOGIN ESQUEMA ==================
+
+export const signInSchema = z.object({
+  username: z.string({ required_error: "Ingrese un usuario" })
+    .min(1, "El usuario es necesario"),
+  password: z.string({ required_error: "La contraseña es necesaria" })
+    .min(1, "La contraseña es necesaria")
+})

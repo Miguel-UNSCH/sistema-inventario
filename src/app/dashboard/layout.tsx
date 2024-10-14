@@ -2,20 +2,25 @@ import Dashboard from "@/components/dashboard";
 import { SIDEBAR_USER_HELP, SIDEBAR_USER_MENU } from "@/utils/sidebar/sidebar-user";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner"
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react"
 
 export const metadata: Metadata = {
-  title: "Panel de control - usuario",
+  title: "Sistema gestor de inventario",
 };
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
+  const session = await auth();
+  console.log(session);
+
   return (
-    <>
+    <SessionProvider>
       <Dashboard roleUser="member" sidebarOptions={[SIDEBAR_USER_MENU, SIDEBAR_USER_HELP]}>{children}</Dashboard>
       <Toaster />
-    </>
+    </SessionProvider>
   );
 }

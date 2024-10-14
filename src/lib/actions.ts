@@ -4,7 +4,7 @@ import {
   permissionSchema,
   personaNaturalSchema, 
   productSchema, 
-  roleSchema, 
+  roleSchema,
   userSchema
 } from "@/utils/zod/schemas";
 import { z } from "zod";

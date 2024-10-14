@@ -28,8 +28,6 @@ async function Page() {
   const resP = await fetch(API_PERMISOS_URL, { cache: "no-store" });
   const permisos = await resP.json();
 
-  console.log(roles);
-
   return (
     <div className="flex flex-col gap-4">
       <FormContainer title="Roles">
