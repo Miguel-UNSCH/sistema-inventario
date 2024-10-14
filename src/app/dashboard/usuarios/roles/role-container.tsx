@@ -16,7 +16,7 @@ interface RoleContainerProps {
   headers: { key: string; label: string }[];
 }
 
-function RoleContainer({ data, headers } : RoleContainerProps) {
+function RoleContainer({ data, headers }: RoleContainerProps) {
 
   const router = useRouter()
 
@@ -53,7 +53,7 @@ function RoleContainer({ data, headers } : RoleContainerProps) {
       toast.dismiss();
       toasterCustom(data.status, data.message)
       router.refresh();
-      
+
       setOpen(false)
 
     } else if (data.status === 400) {
@@ -64,17 +64,17 @@ function RoleContainer({ data, headers } : RoleContainerProps) {
 
   return (
     <>
-      <ConfirmDialog 
-        isOpen={openConfirm} 
+      <ConfirmDialog
+        isOpen={openConfirm}
         onClose={handleCloseConfirm}
-        onConfirm={handleDelete} 
-        title="¿Estás completamente seguro?" 
+        onConfirm={handleDelete}
+        title="¿Estás completamente seguro?"
         description="Esta acción no se puede deshacer. Eliminará permanentemente el registro seleccionado."
       />
       <div className="flex justify-between gap-4">
         <DialogForm setItemEditing={setItemEditing} open={open} setOpen={setOpen} textButton="Agregar nuevo rol" titleDialog="Rol nuevo" descriptionDialog="Agrega un nuevo rol">
-          <FormRole 
-            setOpen={setOpen} 
+          <FormRole
+            setOpen={setOpen}
             data={{
               role: itemEditing?.name,
               description: itemEditing?.description,
@@ -83,7 +83,7 @@ function RoleContainer({ data, headers } : RoleContainerProps) {
           />
         </DialogForm>
       </div>
-      <CustomDataTable headers={headers} data={data} initialItemsPerPage={5} onDelete={handleOpenConfirm} onEdit={handleOpenEdit}/>
+      <CustomDataTable headers={headers} data={data} initialItemsPerPage={5} onDelete={handleOpenConfirm} onEdit={handleOpenEdit} />
     </>
   )
 }

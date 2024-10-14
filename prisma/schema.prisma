@@ -48,25 +48,46 @@ model PersonaJuridica {
   @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
 }
 
+// Tablas de categorias
+
+model Categoria {
+  id          String       @id @default(cuid())
+  category    String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
 // Tablas de productos
 
 model Producto {
-  id          Int     @id @default(autoincrement())
-  ProductName String
-  code        String  @unique
-  description String?
-  price       String
-  stock       String
-  category    String
-  supplier    String  // Añadido campo proveedor
-  createdBy   User?   @relation(fields: [createdById], references: [id])
-  createdById String?
+    id          String     @id @default(cuid())
+    productName String
+    code        String  @unique
+    description String?
+    price       String
+    stock       String
+    category    String
+    supplier    String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([code, category, supplier]) // Modificado para garantizar unicidad en combinación de código, categoría y proveedor
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
 }
+
+
+// Tablas de proveedores
+
+model Proveedor {
+  id            String       @id @default(cuid())
+  supplierName  String       @unique
+  ruc           String       @unique
+  email         String
+  phone         String
+  address       String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
 
 // Tablas de usuarios, sesiones, roles y permisos
 
@@ -77,7 +98,7 @@ model User {
   emailVerified DateTime?
   image         String?
   user          String          @unique
-  password       String
+  password      String
   accounts      Account[]
   sessions      Session[]
   roleId        String?         // Relación con el rol
@@ -85,7 +106,6 @@ model User {
 
   personaNaturals PersonaNatural[]
   personaJuridicas  PersonaJuridica[]
-  productos         Producto[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
