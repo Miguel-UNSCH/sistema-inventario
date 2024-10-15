@@ -15,6 +15,8 @@ async function Page() {
   const res = await fetch(API_URL, { cache: 'no-store' })
   const categorias = await res.json()
 
+  console.log(categorias);
+
   return (
     <FormContainer title="CATEGORIAS">
       <CategoriaContainer data={categorias} headers={headers} />
