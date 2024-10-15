@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -15,30 +14,103 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { productSchema } from "@/utils/zod/schemas";
-import { Combobox } from "@/components/select/combobox";  // Importa el nuevo componente
-import { createProduct } from "@/lib/actions";
+import { createProducto, updateProducto } from "@/lib/actions";
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import toasterCustom from "../toaster-custom"
+import { Combobox } from "@/components/select/combobox";
+
+
+interface ChildComponentProps {
+    setOpen: (open: boolean) => void;
+    data: z.infer<typeof productSchema>
+    idEdit?: string
+}
 
 const categories = [
     { value: "Electrónica", label: "Electrónica" },
     { value: "Vestimenta", label: "Vestimenta" },
     { value: "Muebles", label: "Muebles" }
-]; // Array de categorías actualizado
+];
 
 const suppliers = [
     { value: "Proveedor A", label: "Proveedor A" },
     { value: "Proveedor B", label: "Proveedor B" },
     { value: "Proveedor C", label: "Proveedor C" },
     { value: "Proveedor D", label: "Proveedor D" }
-]; // Opciones de proveedores
+];
 
-export function FormProduct() {
+
+export function FormProduct({ setOpen, data, idEdit }: ChildComponentProps) {
+
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof productSchema>>({
         resolver: zodResolver(productSchema),
+        defaultValues: data ? {
+            productName: data.productName,
+            code: data.code,
+            description: data.description,
+            price: data.price,
+            stock: data.stock,
+            category: data.category,
+            supplier: data.category,
+        } : {}
     });
 
-    function onSubmit(values: z.infer<typeof productSchema>) {
-        createProduct(values);
+    async function onSubmitUpdate(id: string, values: z.infer<typeof productSchema>) {
         console.log(values);
+        toasterCustom(0);
+        const data = await updateProducto(id, values);
+
+        if (!data) {
+            toasterCustom(500, "Ocurrió un error inesperado");
+            return;
+        }
+
+        if (data.status === 200) {
+            toast.dismiss();
+            toasterCustom(data.status, data.message);
+            router.refresh();
+
+            setOpen(false);
+        } else if (data.status === 400) {
+            toast.dismiss();
+            toasterCustom(data.status, data.message);
+            form.setError("productName", { type: "error", message: data.message });
+            form.setFocus("productName");
+        }
+    }
+
+    async function onSubmitCreate(values: z.infer<typeof productSchema>) {
+        toasterCustom(0);
+        const data = await createProducto(values);
+
+        if (!data) {
+            toasterCustom(500, "Ocurrió un error inesperado");
+            return;
+        }
+
+        if (data.status === 200) {
+            toast.dismiss();
+            toasterCustom(data.status, data.message);
+            router.refresh(); // actualizar la tabla
+
+            setOpen(false);
+        } else if (data.status === 400) {
+            toast.dismiss();
+            toasterCustom(data.status, data.message);
+            form.setError("productName", { type: "error", message: data.message });
+            form.setFocus("productName");
+        }
+    }
+
+    async function onSubmit(values: z.infer<typeof productSchema>) {
+        if (idEdit) {
+            await onSubmitUpdate(idEdit, values);
+        } else {
+            await onSubmitCreate(values);
+        }
     }
 
     return (
@@ -101,7 +173,7 @@ export function FormProduct() {
                     name="stock"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Reservas:</FormLabel>
+                            <FormLabel>Stock:</FormLabel>
                             <FormControl>
                                 <Input placeholder="Número de reservas" {...field} />
                             </FormControl>
@@ -143,9 +215,10 @@ export function FormProduct() {
                         </FormItem>
                     )}
                 />
-
                 <div className="flex justify-center py-3">
-                    <Button type="submit">Guardar</Button>
+                    <Button type="submit">
+                        {idEdit ? "Actualizar" : "Guardar"}
+                    </Button>
                 </div>
             </form>
         </Form>

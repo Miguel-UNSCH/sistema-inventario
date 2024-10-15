@@ -5,16 +5,16 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
 
-    const nameRoleFound = await db.role.findUnique({
+    const nameCategoriaFound = await db.categoria.findUnique({
       where: {
-        name: data.role,
+        category: data.category,
       },
     });
 
-    if (nameRoleFound) {
+    if (nameCategoriaFound) {
       return NextResponse.json(
         {
-          message: "El nombre de rol ya existe",
+          message: "La categoria ya existe",
           status: 400,
         },
         {
@@ -23,22 +23,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await db.role.create({
+    await db.categoria.create({
       data: {
-        name: data.role,
-        description: data.description,
+        category: data.category,
+        description: data.description,// Asegúrate de obtener y pasar este valor correctamente
       },
     });
 
     return NextResponse.json(
-      { message: "El rol se a creado con éxito", status: 200 },
+      { message: "La categoria se a creado con éxito", status: 200 },
       {
         status: 200,
       }
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Ocurrió un error al guardar el role: " + error, status: 500 },
+      { message: "Ocurrió un error al guardar la categoria: " + error, status: 500 },
       {
         status: 500,
       }
@@ -48,14 +48,14 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const data = await db.role.findMany()
+    const data = await db.categoria.findMany()
 
     return NextResponse.json(
       data
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Ocurrió un error al obtener los roles: " + error, status: 500 },
+      { message: "Ocurrió un error al obtener los categoria: " + error, status: 500 },
       {
         status: 500,
       }

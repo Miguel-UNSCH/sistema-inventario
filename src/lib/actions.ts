@@ -1,10 +1,12 @@
 'use server'
 
-import { 
-  permissionSchema,
-  personaNaturalSchema, 
-  productSchema, 
+import {
+  categorySchema,
+  personaNaturalSchema,
+  productSchema,
+  supplierSchema,
   roleSchema,
+  permissionSchema,
   userSchema
 } from "@/utils/zod/schemas";
 import { z } from "zod";
@@ -24,10 +26,53 @@ export async function createPersonaNatural(data: z.infer<typeof personaNaturalSc
   console.log(resp);
   return resp;
 }
+// ==================== CRUD CATEGORIAS ==========================
+
+export async function createCategoria(data: z.infer<typeof categorySchema>) {
+  const res = await fetch(`${process.env.HOST_URL}/api/categorias`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data), // Enviar userId
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp;
+}
+
+export async function updateCategoria(id: string, data: z.infer<typeof categorySchema>) {
+  const res = await fetch(`${process.env.HOST_URL}/api/categorias/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
+}
+
+export async function deleteCategoria(id: string) {
+  const res = await fetch(`${process.env.HOST_URL}/api/categorias/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
+}
+
 
 // ==================== CRUD PRODUCTOS ==========================
 
-export async function createProduct(data: z.infer<typeof productSchema>) {
+export async function createProducto(data: z.infer<typeof productSchema>) {
   const res = await fetch(`${process.env.HOST_URL}/api/productos`, {
     method: "POST",
     headers: {
@@ -38,6 +83,77 @@ export async function createProduct(data: z.infer<typeof productSchema>) {
 
   const resp = await res.json();
   console.log(resp);
+  return resp
+}
+
+export async function updateProducto(id: string, data: z.infer<typeof productSchema>) {
+  const res = await fetch(`${process.env.HOST_URL}/api/productos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
+}
+
+export async function deleteProducto(id: string) {
+  const res = await fetch(`${process.env.HOST_URL}/api/productos/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
+}
+
+// ==================== CRUD PROVEEDORES ==========================
+
+export async function createProveedor(data: z.infer<typeof supplierSchema>) {
+  const res = await fetch(`${process.env.HOST_URL}/api/proveedores`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data), // Enviar userId
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp;
+}
+
+export async function updateProveedor(id: string, data: z.infer<typeof supplierSchema>) {
+  const res = await fetch(`${process.env.HOST_URL}/api/proveedores/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
+}
+
+export async function deleteProveedor(id: string) {
+  const res = await fetch(`${process.env.HOST_URL}/api/proveedores/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const resp = await res.json();
+  console.log(resp);
+  return resp
 }
 
 // ==================== CRUD ROLES ==========================
