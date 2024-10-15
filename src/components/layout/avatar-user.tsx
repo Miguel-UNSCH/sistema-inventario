@@ -47,7 +47,9 @@ function AvatarUser() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="w-full p-0 mb-2">
-          <Button onClick={() => signOut()} className="w-full">
+          <Button onClick={() => signOut({
+            callbackUrl: '/'
+          })} className="w-full">
             <LogOut className="mr-2 h-4 w-4" />
             Cerrar sessión
           </Button>
