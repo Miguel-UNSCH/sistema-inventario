@@ -1,5 +1,5 @@
 import FormContainer from "@/components/forms/form-container";
-import ProductoContainer from "./producto-conteiner";
+import ProductoContainer from "./producto-container";
 
 const headers = [
   { key: "productName", label: "Nombre Producto" },
@@ -16,13 +16,21 @@ const headers = [
 
 async function Page() {
 
-  const API_URL = process.env.HOST_URL + '/api/productos'
-  const res = await fetch(API_URL, { cache: 'no-store' })
-  const productos = await res.json()
+  const API_PRODUCT_URL = process.env.HOST_URL + '/api/productos'
+  const resProd = await fetch(API_PRODUCT_URL, { cache: 'no-store' })
+  const productos = await resProd.json()
+
+  const API_PROVEEDOR_URL = process.env.HOST_URL + '/api/proveedores'
+  const resProv = await fetch(API_PROVEEDOR_URL, { cache: 'no-store' })
+  const proveedores = await resProv.json()
+
+  const API_CAT_URL = process.env.HOST_URL + '/api/categorias'
+  const resCat = await fetch(API_CAT_URL, { cache: 'no-store' })
+  const categorias = await resCat.json()
 
   return (
     <FormContainer title="PRODUCTOS">
-      <ProductoContainer data={productos} headers={headers} />
+      <ProductoContainer data={productos} headers={headers} dataCategory={categorias} dataSupplier={proveedores} />
     </FormContainer>
   );
 }

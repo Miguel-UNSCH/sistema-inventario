@@ -14,10 +14,20 @@ import { useRouter } from "next/navigation"
 interface ProductoContainerProps {
     data: Record<string, any>[];
     headers: { key: string; label: string }[];
+    dataCategory: Record<string, any>[];
+    dataSupplier: Record<string, any>[];
 }
 
-function ProductoContainer({ data, headers }: ProductoContainerProps) {
+function ProductoContainer({ data, headers, dataCategory, dataSupplier }: ProductoContainerProps) {
 
+    const categoryOptions = dataCategory.map(category => {
+        return { value: String(category.id), label: String(category.category) }
+    })
+
+    const supplierOptions = dataSupplier.map(supplier => {
+        return { value: String(supplier.id), label: String(supplier.supplierName) }
+    })
+    
     const router = useRouter()
 
     const [open, setOpen] = useState(false);
@@ -85,6 +95,8 @@ function ProductoContainer({ data, headers }: ProductoContainerProps) {
                             supplier: itemEditing?.category,
                         }}
                         idEdit={itemEditing?.id}
+                        categoryOptions={categoryOptions}
+                        supplierOptions={supplierOptions}
                     />
                 </DialogForm>
             </div>

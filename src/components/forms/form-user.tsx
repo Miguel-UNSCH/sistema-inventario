@@ -26,7 +26,8 @@ export function FormUser({ setOpen, data, idEdit, roleOptions }: ChildComponentP
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
-    defaultValues: data && idEdit ? { name: data.name, email: data.email, user: data.user, roleId: data.roleId, password: data.password } : {},
+    defaultValues: 
+    data && idEdit ? { name: data.name, email: data.email, user: data.user, roleId: data.roleId, password: data.password } : {},
   });
 
   async function onSubmitUpdate(id: string, values: z.infer<typeof userSchema>) {

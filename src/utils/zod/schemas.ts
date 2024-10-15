@@ -36,28 +36,28 @@ export const personaJuridicaSchema = z.object({
 });
 
 export const categorySchema = z.object({
-  category: z.string().min(1, "El nombre de la categoría es obligatorio"),
+  category: z.string({required_error: "El nombre de la categoria es obligatorio"}).min(1, "El nombre de la categoría es obligatorio"),
   description: z.string().optional(),
 });
 
 export const productSchema = z.object({
-  productName: z.string().min(1, "El nombre del producto es obligatorio"),
-  code: z.string().min(1, "El código es obligatorio"),
+  productName: z.string({required_error: "El nombre del producto es obligatorio"}).min(1, "El nombre del producto es obligatorio"),
+  code: z.string({required_error: "El código es obligatorio"}).min(1, "El código es obligatorio"),
   description: z.string().optional(),
   price: z
-    .string()
+    .string({required_error: "El precio es obligatorio"})
     .regex(/^\d+$/, "El precio debe ser un número válido") // Acepta números decimales con hasta 2 decimales
     .refine((value) => parseFloat(value) >= 0.01, {
       message: "El precio debe ser al menos 0.01",
     }),
   stock: z
-    .string()
+    .string({required_error: "El stock es obligatorio"})
     .regex(/^\d+$/, "Las reservas deben ser un número")
     .refine((value) => parseInt(value) >= 1, {
       message: "Las reservas deben ser al menos 1",
     }),
-  category: z.string().min(1, "La categoría es obligatoria"),
-  supplier: z.string().min(1, "El proveedor es obligatorio"),
+  category: z.string({required_error: "Seleccione una categoria"}).min(1, "La categoría es obligatoria"),
+  supplier: z.string({required_error: "Seleccione un proveedor"}).min(1, "El proveedor es obligatorio"),
 });
 
 export const supplierSchema = z.object({
@@ -78,7 +78,7 @@ export const supplierSchema = z.object({
 // ======================= ROLES ESQUEMAS ==================
 
 export const roleSchema = z.object({
-  role: z.string().min(3, "El nombre del rol es obligatorio"),
+  role: z.string({required_error: "El nombre del rol es obligatorio"}).min(3, "El nombre del rol debe tener al 3 caracteres"),
   description: z.string().optional(),
 })
 
