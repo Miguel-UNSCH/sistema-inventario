@@ -43,7 +43,7 @@ function LoginContainer() {
       // Esperar un breve tiempo para asegurar que las cookies se guarden
       setTimeout(() => {
         router.push(callbackUrl);
-      }, 500); // Ajusta el tiempo según lo que consideres apropiado
+      }, 1000); // Ajusta el tiempo según lo que consideres apropiado
     }
   };
 
