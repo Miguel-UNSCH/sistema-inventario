@@ -8,7 +8,11 @@ import authConfig from "./auth.config";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   ...authConfig,
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // Tiempo de expiracón 24 horas
+    updateAge: 8 * 60 * 60, // Actualiza el tiempo de expiración cada 8 horas
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
