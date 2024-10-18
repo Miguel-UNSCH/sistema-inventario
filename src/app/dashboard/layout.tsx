@@ -4,8 +4,6 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner"
 import { auth } from "@/auth";
 
-import { redirect } from "next/navigation";
-
 export const metadata: Metadata = {
   title: "Sistema gestor de inventario",
 };
@@ -17,10 +15,6 @@ export default async function DashboardLayout({
 
   const session = await auth();
   console.log(session);
-
-  if (!session) {
-    redirect("/login");
-  }
 
   return (
     <>
