@@ -2,46 +2,25 @@
 // import { NextResponse, NextRequest } from "next/server";
 
 // export async function middleware(req: NextRequest) {
+//   console.log("Cookies:", req.cookies); // Verifica las cookies
 //   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+//   console.log("Token:", token);
 
-//   // Si no hay token, redirigir a la página de login
 //   if (!token) {
 //     const loginUrl = new URL('/login', req.url);
-//     loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname); // Agregar la URL original
-
+//     loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
 //     return NextResponse.redirect(loginUrl);
 //   }
 
-//   // Si el token existe, permitir el acceso
 //   return NextResponse.next();
 // }
 
-// // Configuración del matcher para proteger ciertas rutas
+
 // export const config = {
-//   matcher: [
-//     '/dashboard/:path*',
-//   ],
+//   matcher: ['/dashboard/:path*'],
 // };
 
-import { getToken } from "next-auth/jwt";
-import { NextResponse, NextRequest } from "next/server";
-
-export async function middleware(req: NextRequest) {
-  console.log("Cookies:", req.cookies); // Verifica las cookies
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-  console.log("Token:", token);
-
-  if (!token) {
-    const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return NextResponse.next();
-}
-
-
-export const config = {
-  matcher: ['/dashboard/:path*'],
-};
-
+import NextAuth from "next-auth"
+import authConfig from "./auth.config"
+ 
+export const { auth: middleware } = NextAuth(authConfig)
