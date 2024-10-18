@@ -29,11 +29,12 @@ import { NextResponse, NextRequest } from "next/server";
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   
-  console.log("Token:", token);  // Agrega este log para verificar el token en producción
+  console.log("Token:", token);
+  console.log("Cookies:", req.cookies.getAll());  // Para inspeccionar todas las cookies
 
   if (!token) {
     const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname); // Agregar la URL original
+    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 

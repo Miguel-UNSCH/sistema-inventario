@@ -1,3 +1,5 @@
+// types/next-auth.d.ts
+
 import { DefaultSession } from "next-auth";
 import "next-auth/jwt";
 

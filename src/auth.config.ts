@@ -17,13 +17,13 @@ export default {
         const { data, success } = signInSchema.safeParse(credentials);
 
         if (!success) {
-          throw new Error("Invalid credentials");
+          throw new Error("Invalid username or password format");
         }
 
         // verificar si existe el usuario en la base de datos
-        const user = await db.user.findUnique({
+        const user = await db.user.findFirst({
           where: {
-            user: data.username,
+            OR: [{ user: data.username }, { email: data.username }],
           },
         });
 
