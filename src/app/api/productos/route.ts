@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
                 stock: data.stock,
                 category: data.category,
                 supplier: data.supplier,
-                userId: data.userId, // Asegúrate de que 'userId' esté en tu payload
             },
         });
 
