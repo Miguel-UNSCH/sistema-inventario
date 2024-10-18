@@ -75,9 +75,9 @@ export default function SignIn({ onSubmit, serverError, status }: { onSubmit: (v
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Usuario</FormLabel>
+                    <FormLabel>Usuario o correo</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ingresa tu usuario" {...field} />
+                      <Input placeholder="juan@juan.com" {...field} />
                     </FormControl>
                     <FormMessage className='text-end'/>
                   </FormItem>
@@ -93,7 +93,7 @@ export default function SignIn({ onSubmit, serverError, status }: { onSubmit: (v
                     <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Ingresa tu contraseña"
+                          placeholder="**************"
                           {...field}
                         />
                         <Button

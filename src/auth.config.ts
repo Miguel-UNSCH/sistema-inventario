@@ -20,10 +20,13 @@ export default {
           throw new Error("Invalid username or password format");
         }
 
-        // verificar si existe el usuario en la base de datos
+        // Verificar si existe el usuario en la base de datos
         const user = await db.user.findFirst({
           where: {
             OR: [{ user: data.username }, { email: data.username }],
+          },
+          include: {
+            role: true,
           },
         });
 
@@ -42,7 +45,7 @@ export default {
           id: user.id,
           name: user.name,
           email: user.email,
-          image: user.image,
+          role: user.role?.name,
         };
       },
     }),

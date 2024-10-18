@@ -27,10 +27,9 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
+  console.log("Cookies:", req.cookies); // Verifica las cookies
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-  
   console.log("Token:", token);
-  console.log("Cookies:", req.cookies.getAll());  // Para inspeccionar todas las cookies
 
   if (!token) {
     const loginUrl = new URL('/login', req.url);
@@ -40,6 +39,7 @@ export async function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
+
 
 export const config = {
   matcher: ['/dashboard/:path*'],
