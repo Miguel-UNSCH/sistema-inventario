@@ -1,7 +1,7 @@
 function Page() {
   return (
     <>
-      Cuenta
+      Cuenta: Configuración del perfil del usuario actual, cambio de contraseña, preferencias.
     </>
   )
 }

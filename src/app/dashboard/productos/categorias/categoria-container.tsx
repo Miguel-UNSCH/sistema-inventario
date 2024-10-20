@@ -3,20 +3,20 @@
 
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog";
 import { DialogForm } from "@/components/dialog/dialog-form";
-import { FormSupplier } from "@/components/forms/form-sellers";
+import { FormCategory } from "@/components/forms/form-category";
 import CustomDataTable from "@/components/table/custom-data-table";
 import toasterCustom from "@/components/toaster-custom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { deleteSupplier } from "@/actions/supplier-actions";
+import { deleteCategory } from "@/actions/category-actions";
 
-interface ProveedorContainerProps {
+interface CategoriaContainerProps {
   data: Record<string, any>[];
   headers: { key: string; label: string }[];
 }
 
-function ProveedorContainer({ data, headers }: ProveedorContainerProps) {
+function CategoriaContainer({ data, headers }: CategoriaContainerProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
@@ -42,7 +42,7 @@ function ProveedorContainer({ data, headers }: ProveedorContainerProps) {
   const handleDelete = async () => {
     setOpenConfirm(false);
     toasterCustom(0, "Eliminando");
-    const data = await deleteSupplier(itemDeleted?.id);
+    const data = await deleteCategory(itemDeleted?.id);
     if (!data) {
       toasterCustom(500, "Ocurrió un error inesperado");
       return;
@@ -79,17 +79,14 @@ function ProveedorContainer({ data, headers }: ProveedorContainerProps) {
           setItemEditing={setItemEditing}
           open={open}
           setOpen={setOpen}
-          textButton="Agregar nuevo proveedor"
-          titleDialog="REGISTRO DE PROVEEDOR"
-          descriptionDialog="Agrega un nuevo proveedor">
-          <FormSupplier
+          textButton="Agregar nuevo categoria"
+          titleDialog="REGISTRO DE CATEGORIA"
+          descriptionDialog="Agrega una nueva categoria">
+          <FormCategory
             setOpen={setOpen}
             data={{
-              supplierName: itemEditing?.supplierName,
-              ruc: itemEditing?.ruc,
-              email: itemEditing?.email,
-              phone: itemEditing?.phone,
-              address: itemEditing?.address,
+              category: itemEditing?.category,
+              description: itemEditing?.description,
             }}
             idEdit={itemEditing?.id}
           />
@@ -100,4 +97,4 @@ function ProveedorContainer({ data, headers }: ProveedorContainerProps) {
   );
 }
 
-export default ProveedorContainer;
+export default CategoriaContainer;

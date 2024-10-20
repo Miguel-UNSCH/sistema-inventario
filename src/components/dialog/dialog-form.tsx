@@ -34,7 +34,7 @@ export function DialogForm({ variant, className, textButton, titleDialog, descri
           setItemEditing(null)
         }} variant={variant}>{textButton}</Button>
       </DialogTrigger>
-      <DialogContent className={`sm:max-w-[425px] ${className}`}>
+      <DialogContent className={`${className}`}>
         <DialogHeader>
           <DialogTitle className="text-center">{titleDialog}</DialogTitle>
           <DialogDescription className="text-center">

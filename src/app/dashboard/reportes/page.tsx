@@ -1,7 +1,9 @@
 function Page() {
   return (
     <>
-      Reportes
+      Generación de reportes por módulos (ventas, entradas, salidas, stock, auditorías).
+      Filtros por fechas, categorías, proveedores y clientes.
+      Exportación de datos (PDF, Excel).
     </>
   )
 }

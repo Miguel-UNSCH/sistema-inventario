@@ -37,7 +37,9 @@ export default function CustomDataTable({
 }: DataTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
-  const [visibleColumns, setVisibleColumns] = useState<string[]>(headers.map((h) => h.key));
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(headers
+    .map((h) => h.key)
+    .filter(key => key !== 'createdAt' && key !== 'updatedAt'));  
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredData = useMemo(() => {

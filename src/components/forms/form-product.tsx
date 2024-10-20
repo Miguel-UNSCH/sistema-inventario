@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { productSchema } from "@/utils/zod/schemas";
-import { createProducto, updateProducto } from "@/lib/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import toasterCustom from "../toaster-custom";
 import { Combobox } from "@/components/select/combobox";
+import { createProducto, updateProducto } from "@/actions/product-actions";
 
 interface ChildComponentProps {
   setOpen: (open: boolean) => void;
@@ -31,16 +31,14 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
           productName: data.productName,
           code: data.code,
           description: data.description,
-          price: data.price,
-          stock: data.stock,
-          category: data.category,
-          supplier: data.category,
+          stockMinimo: data.stockMinimo,
+          categoryId: data.categoryId,
+          supplierId: data.supplierId,
         }
       : {},
   });
 
   async function onSubmitUpdate(id: string, values: z.infer<typeof productSchema>) {
-    console.log(values);
     toasterCustom(0);
     const data = await updateProducto(id, values);
 
@@ -60,6 +58,11 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
       toasterCustom(data.status, data.message);
       form.setError("productName", { type: "error", message: data.message });
       form.setFocus("productName");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
@@ -83,6 +86,14 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
       toasterCustom(data.status, data.message);
       form.setError("productName", { type: "error", message: data.message });
       form.setFocus("productName");
+
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      form.setError("productName", { type: "error", message: data.message });
+      form.setFocus("productName");
+
+      setOpen(false);
     }
   }
 
@@ -138,12 +149,12 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
         />
         <FormField
           control={form.control}
-          name="price"
+          name="stockMinimo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Precio:</FormLabel>
+              <FormLabel>Stock Mínimo:</FormLabel>
               <FormControl>
-                <Input placeholder="Precio del producto" {...field} />
+                <Input placeholder="10" {...field} type="number"/>
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
@@ -151,20 +162,7 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
         />
         <FormField
           control={form.control}
-          name="stock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock:</FormLabel>
-              <FormControl>
-                <Input placeholder="Número de reservas" {...field} />
-              </FormControl>
-              <FormMessage className="text-end" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="category"
+          name="categoryId"
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center gap-4">
@@ -183,7 +181,7 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
         />
         <FormField
           control={form.control}
-          name="supplier"
+          name="supplierId"
           render={({ field }) => (
             <FormItem>
                 <div className="flex items-center gap-4">

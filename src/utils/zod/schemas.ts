@@ -41,24 +41,19 @@ export const categorySchema = z.object({
 });
 
 export const productSchema = z.object({
-  productName: z.string({required_error: "El nombre del producto es obligatorio"}).min(1, "El nombre del producto es obligatorio"),
-  code: z.string({required_error: "El código es obligatorio"}).min(1, "El código es obligatorio"),
+  productName: z.string({ required_error: "El nombre del producto es obligatorio" }).min(1, "El nombre del producto es obligatorio"),
+  code: z.string({ required_error: "El código es obligatorio" }).min(1, "El código es obligatorio"),
   description: z.string().optional(),
-  price: z
-    .string({required_error: "El precio es obligatorio"})
-    .regex(/^\d+$/, "El precio debe ser un número válido") // Acepta números decimales con hasta 2 decimales
-    .refine((value) => parseFloat(value) >= 0.01, {
-      message: "El precio debe ser al menos 0.01",
-    }),
-  stock: z
-    .string({required_error: "El stock es obligatorio"})
-    .regex(/^\d+$/, "Las reservas deben ser un número")
-    .refine((value) => parseInt(value) >= 1, {
-      message: "Las reservas deben ser al menos 1",
-    }),
-  category: z.string({required_error: "Seleccione una categoria"}).min(1, "La categoría es obligatoria"),
-  supplier: z.string({required_error: "Seleccione un proveedor"}).min(1, "El proveedor es obligatorio"),
+  stockMinimo: z.union([
+    z.string().transform((val) => parseFloat(val)), // Acepta string y lo convierte
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "El stock mínimo debe ser un número válido",
+  }),
+  categoryId: z.string({ required_error: "Seleccione una categoría" }).min(1, "La categoría es obligatoria"),
+  supplierId: z.string({ required_error: "Seleccione un proveedor" }).min(1, "El proveedor es obligatorio"),
 });
+
 
 export const supplierSchema = z.object({
   supplierName: z.string()

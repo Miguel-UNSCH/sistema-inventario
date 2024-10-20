@@ -4,6 +4,7 @@ import { FaChevronLeft } from "react-icons/fa";
 
 import AsideOptions from "./aside-options";
 import { SidebarMenu } from "@/types/opciones_menu";
+import Image from "next/image";
 
 function Aside({
   openSidebar,
@@ -31,11 +32,9 @@ function Aside({
       <div className="flex items-center justify-between p-6 border-b border-border">
         <div className="text-4xl font-extrabold">
           {sidebarMinimize ? (
-            <span className="text-primary">S</span>
+            <Image src={'/logo/logo-min.png'} alt="logo" width={50} height={50}/>
           ) : (
-            <h1 translate="no">
-              Sys<span className="text-primary">Inv</span>
-            </h1>
+            <Image src={'/logo/logo.png'} alt="logo" width={100} height={50}/>
           )}
         </div>
         <Button variant="ghost" size="icon" onClick={toggleSidebar} className="lg:hidden">

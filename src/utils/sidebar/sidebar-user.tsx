@@ -5,6 +5,7 @@ import { FaCartPlus, FaShoppingCart, FaUserCog, FaUsers, FaUserShield } from "re
 import { RiUserVoiceFill } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
 import { BiSolidCategoryAlt } from "react-icons/bi";
+import { AiOutlineStock } from "react-icons/ai";
 
 import { SidebarMenu } from "@/types/opciones_menu";
 import { FaBuildingUser, FaListCheck, FaTruckArrowRight, FaUsersGear } from "react-icons/fa6";
@@ -61,6 +62,11 @@ export const SIDEBAR_USER_MENU: SidebarMenu = {
           label: 'Salidas / Facturación',
           href: '/dashboard/existencias/salidas',
           icon: <FaTruckArrowRight className="h-5 w-5" style={{ transform: 'rotateY(180deg)' }}/>,
+        },
+        {
+          label: 'Stock actual',
+          href: '/dashboard/existencias/stock',
+          icon: <AiOutlineStock className="h-5 w-5"/>,
         }
       ]
     },

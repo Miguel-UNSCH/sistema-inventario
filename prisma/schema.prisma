@@ -19,10 +19,10 @@ datasource db {
   url = env("POSTGRES_PRISMA_URL")
 }
 
-// Tablas de clientes
+// Tabla de clientes (Personas Naturales y Jurídicas)
 
 model PersonaNatural {
-  id         Int     @id @default(autoincrement())
+  id          String     @id @default(cuid())
   firstName  String
   lastName   String
   identifier String? @unique // Campo opcional, 8 dígitos
@@ -32,6 +32,10 @@ model PersonaNatural {
   createdBy  User?   @relation(fields: [createdById], references: [id])
   createdById String?
 
+  boletas    Boleta []
+  facturas   Factura[]
+  salidas    Salida []
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -39,7 +43,7 @@ model PersonaNatural {
 }
 
 model PersonaJuridica {
-  id                    Int     @id @default(autoincrement())
+  id          String     @id @default(cuid())
   companyName           String
   ruc                   String  @unique // RUC, 11 dígitos
   representativeName    String
@@ -51,41 +55,73 @@ model PersonaJuridica {
   createdBy             User?   @relation(fields: [createdById], references: [id])
   createdById           String?
 
+  boletas               Boleta []
+  facturas              Factura[]
+  salidas               Salida []
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
 }
 
-// Tablas de categorias
-
+// Tabla de categorías de productos
 model Categoria {
   id          String       @id @default(cuid())
   category    String       @unique
   description String?
+  productos   Producto[]
+
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
 
-// Tablas de productos
+// Tabla de unidades de medida
+model UnidadMedida {
+  id          String     @id @default(cuid())
+  nombre      String     @unique
+  simbolo     String     // Ej: kg, und, doc, caja, etc.
+  entradas    Entrada []
 
-model Producto {
-    id          String     @id @default(cuid())
-    productName String
-    code        String  @unique
-    description String?
-    price       String
-    stock       String
-    category    String
-    supplier    String
-
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 
-// Tablas de proveedores
+// tabla de productos
 
+model Producto {
+  id              String       @id @default(cuid())
+  productName     String
+  code            String       @unique
+  description     String?
+  stockMinimo     Int
+
+
+  categoryId      String
+  category        Categoria     @relation(fields: [categoryId], references: [id])
+  
+  supplierId      String?
+  supplier        Proveedor? @relation(fields: [supplierId], references: [id])
+  
+  createdById     String?
+  createdBy       User?        @relation(fields: [createdById], references: [id])
+  
+  
+  movimientos     MovimientoInventario[]
+  detallesBoleta  DetalleBoleta[]
+  detallesFactura DetalleFactura[]
+  entradas        Entrada[]
+  salidas         Salida[]
+  stock           Stock []
+
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+
+// Tabla de proveedores
 model Proveedor {
   id            String       @id @default(cuid())
   supplierName  String       @unique
@@ -93,15 +129,186 @@ model Proveedor {
   email         String
   phone         String
   address       String
+
+  productos     Producto[]
+  boletas       Boleta []
+  facturas      Factura []
+  entradas      Entrada []
+
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }
+
+// Tabla de detalle de boletas
+model DetalleBoleta {
+  id          String   @id @default(cuid())
+  boletaId    String
+  boleta      Boleta   @relation(fields: [boletaId], references: [id], onDelete: Cascade)
+  
+  productoId  String
+  producto    Producto @relation(fields: [productoId], references: [id])
+  
+  cantidad    Float    // Cantidad del producto en la boleta
+  precioUnitario Float // Precio unitario del producto
+  descuento   Float?   // Descuento opcional (en porcentaje o monto)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Tabla de detalle de facturas
+model DetalleFactura {
+  id           String   @id @default(cuid())
+  facturaId    String
+  factura      Factura  @relation(fields: [facturaId], references: [id], onDelete: Cascade)
+  
+  productoId   String
+  producto     Producto @relation(fields: [productoId], references: [id])
+  
+  cantidad     Float    // Cantidad del producto en la factura
+  precioUnitario Float  // Precio unitario del producto
+  descuento    Float?   // Descuento opcional (en porcentaje o monto)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+
+// Tabla de boletas
+model Boleta {
+  id               String           @id @default(cuid())
+  numero           String           @unique
+  fechaEmision     DateTime         @default(now())
+  
+  clienteNaturalId  String?
+  clienteNatural    PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
+
+  clienteJuridicoId String?
+  clienteJuridico   PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+
+  proveedorId      String?
+  proveedor        Proveedor?       @relation(fields: [proveedorId], references: [id])
+
+  detalles         DetalleBoleta[]  // Relación con el detalle de productos
+  movimientos      MovimientoInventario []
+
+  total            Float            // Total de la boleta
+  estado           String
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+// Tabla de facturas
+model Factura {
+  id               String           @id @default(cuid())
+  numero           String           @unique
+  fechaEmision     DateTime         @default(now())
+  
+  clienteNaturalId  String?
+  clienteNatural    PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
+
+  clienteJuridicoId String?
+  clienteJuridico   PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+
+  proveedorId      String?
+  proveedor        Proveedor?       @relation(fields: [proveedorId], references: [id])
+
+  detalles         DetalleFactura[] // Relación con el detalle de productos
+  movimientos      MovimientoInventario []
+
+  total            Float            // Total de la factura
+  estado           String
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+
+
+// Tabla de movimientos de inventario (entradas/salidas)
+model MovimientoInventario {
+  id          String       @id @default(cuid())
+  tipo        String       // "entrada" o "salida"
+  cantidad    Float        // Cantidad del movimiento
+
+  productoId  String
+  producto    Producto     @relation(fields: [productoId], references: [id])
+
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+
+  facturaId   String?
+  factura     Factura?     @relation(fields: [facturaId], references: [id])
+
+  boletaId     String?
+  boleta       Boleta?       @relation(fields: [boletaId], references: [id])
+
+  fecha       DateTime     @default(now())
+  descripcion String?      // Ej: Venta realizada o stock agregado
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// Modelo para registrar entradas (compras)
+model Entrada {
+  id             String     @id @default(cuid())
+  productId      String
+  producto       Producto   @relation(fields: [productId], references: [id])
+  cantidad       Float
+  precioCompra   Float
+  unidadId       String
+  unidad         UnidadMedida @relation(fields: [unidadId], references: [id])
+
+  fechaEntrada   DateTime   @default(now())
+
+  proveedorId    String?
+  proveedor      Proveedor? @relation(fields: [proveedorId], references: [id])
+  
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+// Modelo para registrar salidas (ventas)
+model Salida {
+  id                  String     @id @default(cuid())
+  productId           String
+  producto            Producto   @relation(fields: [productId], references: [id])
+  cantidad            Int
+  precioVenta         Float
+  descuento           Float?     // El descuento puede ser opcional
+  tipoDescuento       String?    // Nuevo campo para tipo de descuento como String
+  fechaSalida         DateTime   @default(now())
+
+  clienteNaturalId    String?
+  clienteNatural      PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
+
+  clienteJuridicoId   String?
+  clienteJuridico     PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+}
+
+// Tabla de stock actual de productos
+model Stock {
+  id          String   @id @default(cuid())
+  productoId  String
+  producto    Producto @relation(fields: [productoId], references: [id])
+
+  cantidad    Float      // Cantidad actual en stock
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique(productoId) // Garantiza que solo haya un registro por producto
+}
+
 
 
 // Tablas de usuarios, sesiones, roles y permisos
 
 model User {
-  id            String          @id @default(uuid())
+  id            String          @id @default(cuid())
   name          String?
   email         String?         @unique
   emailVerified DateTime?
@@ -113,9 +320,11 @@ model User {
   roleId        String?         // Relación con el rol
   role          Role?           @relation(fields: [roleId], references: [id], onDelete: SetNull)
 
-  personaNaturals PersonaNatural[]
+  personaNaturales PersonaNatural[]
   personaJuridicas  PersonaJuridica[]
- 
+  productos Producto[]
+  movimientos MovimientoInventario[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

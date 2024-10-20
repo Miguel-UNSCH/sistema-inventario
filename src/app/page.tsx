@@ -50,12 +50,12 @@ export default function LandingPage() {
               Iniciar sesión
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-            <button className="border border-green-500 text-green-500 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors duration-300 flex items-center">
+            {/* <button className="border border-green-500 text-green-500 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors duration-300 flex items-center">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2-13v6l5-3-5-3z" />
               </svg>
               Tutorial de uso
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="md:w-1/2 relative hidden sm:block dark:hidden">

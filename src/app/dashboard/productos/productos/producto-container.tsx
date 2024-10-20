@@ -6,10 +6,10 @@ import { DialogForm } from "@/components/dialog/dialog-form";
 import { FormProduct } from "@/components/forms/form-product";
 import CustomDataTable from "@/components/table/custom-data-table";
 import toasterCustom from "@/components/toaster-custom";
-import { deleteProducto } from "@/lib/actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
+import { deleteProducto } from "@/actions/product-actions";
 
 interface ProductoContainerProps {
     data: Record<string, any>[];
@@ -69,6 +69,11 @@ function ProductoContainer({ data, headers, dataCategory, dataSupplier }: Produc
         } else if (data.status === 400) {
             toast.dismiss();
             toasterCustom(data.status, data.message)
+        } else {
+            toast.dismiss();
+            toasterCustom(data.status, data.message)
+
+            setOpen(false)
         }
     }
 
@@ -89,10 +94,9 @@ function ProductoContainer({ data, headers, dataCategory, dataSupplier }: Produc
                             productName: itemEditing?.productName,
                             code: itemEditing?.code,
                             description: itemEditing?.description,
-                            price: itemEditing?.price,
-                            stock: itemEditing?.stock,
-                            category: itemEditing?.category,
-                            supplier: itemEditing?.category,
+                            stockMinimo: itemEditing?.stockMinimo,
+                            categoryId: itemEditing?.categoryId,
+                            supplierId: itemEditing?.supplierId,
                         }}
                         idEdit={itemEditing?.id}
                         categoryOptions={categoryOptions}

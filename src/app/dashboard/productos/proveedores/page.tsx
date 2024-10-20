@@ -1,5 +1,6 @@
 import FormContainer from "@/components/forms/form-container";
 import ProveedorContainer from "./proveedor-conteiner";
+import { getSuppliers } from "@/actions/supplier-actions";
 
 
 const headers = [
@@ -13,12 +14,18 @@ const headers = [
 ];
 
 async function Page() {
-  const API_URL = process.env.HOST_URL + '/api/proveedores'
-  const res = await fetch(API_URL, { cache: 'no-store' })
-  const proveedores = await res.json()
+  const proveedores = await getSuppliers()
+
+  if (typeof proveedores === "object" && "status" in proveedores) {
+    return (
+      <FormContainer title="Proveedores">
+        <h1>{proveedores.message}</h1>
+      </FormContainer>
+    );
+  }
 
   return (
-    <FormContainer title="PROVEEDORES">
+    <FormContainer title="Proveedores">
       <ProveedorContainer data={proveedores} headers={headers} />
     </FormContainer>
   );

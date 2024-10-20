@@ -1,13 +1,21 @@
+'use client'
+
 import { CustomPieChart } from "@/components/charts/pie-chart";
 import { CardBlocks } from "@/components/blocks/card";
 import FormContainer from "@/components/forms/form-container";
+import { useSession } from "next-auth/react";
 
 function Dashboard() {
+  
+  const { data: session } = useSession()
+
+  console.log(session);
+  
   return (
-    <div className="p-6 space-y-8">
+    <div className="space-y-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="">
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">¡Hola Juan, Buen Día!</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">¡Hola {session?.user.name}, Buen Día!</h1>
           <p className="text-base md:text-lg text-card-foreground">
             A continuación, presento los informes actualizados correspondientes al día de hoy.
           </p>

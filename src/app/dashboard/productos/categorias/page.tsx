@@ -1,5 +1,6 @@
 import FormContainer from "@/components/forms/form-container";
-import CategoriaContainer from "./categoria-conteiner";
+import CategoriaContainer from "./categoria-container";
+import { getCategories } from "@/actions/category-actions";
 
 const headers = [
   { key: "category", label: "Categoria del producto" },
@@ -10,15 +11,18 @@ const headers = [
 
 
 async function Page() {
+  const categorias = await getCategories()
 
-  const API_URL = process.env.HOST_URL + '/api/categorias'
-  const res = await fetch(API_URL, { cache: 'no-store' })
-  const categorias = await res.json()
-
-  console.log(categorias);
+  if (typeof categorias === "object" && "status" in categorias) {
+    return (
+      <FormContainer title="Categorias">
+        <h1>{categorias.message}</h1>
+      </FormContainer>
+    );
+  }
 
   return (
-    <FormContainer title="CATEGORIAS">
+    <FormContainer title="Categorias">
       <CategoriaContainer data={categorias} headers={headers} />
     </FormContainer>
   );

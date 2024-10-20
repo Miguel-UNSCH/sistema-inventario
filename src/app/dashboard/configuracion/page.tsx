@@ -1,7 +1,7 @@
 function Page() {
   return (
     <>
-      Configuracion
+      Configuración General: Parámetros del sistema (moneda, impuestos, notificaciones).
     </>
   )
 }
