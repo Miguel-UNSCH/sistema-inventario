@@ -1,0 +1,17 @@
+{
+  "theme_color": "#23262B",
+  "background_color": "#23262B",
+  "icons": [
+    { "purpose": "maskable", "sizes": "512x512", "src": "logo/logo-min.png", "type": "image/png" },
+    { "purpose": "any", "sizes": "512x512", "src": "logo/logo-min.png", "type": "image/png" }
+  ],
+  "orientation": "any",
+  "display": "standalone",
+  "dir": "auto",
+  "lang": "es-PE",
+  "name": "Sistema gestor de inventarios",
+  "short_name": "SysInv",
+  "description": "Sistema gestor de inventarios",
+  "scope": "https://sysinv.vercel.app/",
+  "start_url": "https://sysinv.vercel.app/"
+}

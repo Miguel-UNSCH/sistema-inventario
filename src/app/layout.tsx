@@ -19,6 +19,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Sistema gestor de inventarios",
   description: "Sistema gestor de inventarios",
+  manifest: '/manifest.json'
 };
 
 export default function RootLayout({
