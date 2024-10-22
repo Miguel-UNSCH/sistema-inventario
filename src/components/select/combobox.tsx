@@ -30,6 +30,12 @@ export interface GenericSelectProps extends SelectProps {
 export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
     ({ options, placeholder, onChange, value }, ref) => {
         const [open, setOpen] = React.useState(false)
+        const [inputValue, setInputValue] = React.useState("")
+
+        // Filtrar las opciones basadas en el label
+        const filteredOptions = options.filter(option =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase())
+        )
 
         return (
             <Popover open={open} onOpenChange={setOpen}>
@@ -50,16 +56,22 @@ export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
                 </PopoverTrigger>
                 <PopoverContent className="w-[250px] p-0">
                     <Command>
-                        <CommandInput className="my-2 border-0 ring-1 ring-border border-border focus:ring-primary" placeholder={`Search ${placeholder}...`} />
+                        <CommandInput
+                            className="my-2 border-0 ring-1 ring-border border-border focus:ring-primary"
+                            placeholder={`Search ${placeholder}...`}
+                            value={inputValue}
+                            onValueChange={(val) => setInputValue(val)} // Actualizar el inputValue
+                        />
                         <CommandList>
                             <CommandEmpty>No hay coincidencias.</CommandEmpty>
                             <CommandGroup>
-                                {options.map((option) => (
+                                {filteredOptions.map((option) => (
                                     <CommandItem
                                         key={option.value}
-                                        value={option.value}
-                                        onSelect={(currentValue) => {
-                                            onChange?.(currentValue === value ? null : currentValue)
+                                        value={option.label} // Pasar label como valor de búsqueda
+                                        onSelect={() => {
+                                            const selectedValue = option.value;
+                                            onChange?.(selectedValue === value ? null : selectedValue)
                                             setOpen(false)
                                         }}
                                     >

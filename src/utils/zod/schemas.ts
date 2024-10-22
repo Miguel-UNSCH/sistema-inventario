@@ -124,3 +124,28 @@ export const signInSchema = z.object({
   password: z.string({ required_error: "La contraseña es necesaria" })
     .min(1, "La contraseña es necesaria")
 })
+
+// ======================= ENTRADAS ESQUEMA ==================
+
+export const entradasSchema = z.object({
+  productId: z.string({ required_error: "Seleccione un producto" }),
+  cantidad: z.union([
+    z.string({required_error: 'Ingrese cantidad'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "La cantidad debe ser un número válido",
+  }),
+  precioCompra: z.union([
+    z.string({required_error: 'Ingrese precio compra'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "El precio debe ser un número válido",
+  }),
+  precioVenta: z.union([
+    z.string({required_error: 'Ingrese precio venta'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "El precio debe ser un número válido",
+  }),
+  unidadId: z.string({required_error: 'Seleccione unidad de medida'})
+})
