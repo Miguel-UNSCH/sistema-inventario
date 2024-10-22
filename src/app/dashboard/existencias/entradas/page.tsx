@@ -1,8 +1,8 @@
+import EntradasContainer from "./entradas-container";
+
 function Page() {
   return (
-    <>
-      Entradas
-    </>
+    <EntradasContainer />
   )
 }
 
