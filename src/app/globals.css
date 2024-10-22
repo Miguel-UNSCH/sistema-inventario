@@ -31,11 +31,12 @@
     --ring: #0a0a0a;
     --chart-1: #8f390b;
     --chart-2: #41916b;
-    --chart-3: #376982;
+    --chart-3: #e68911;
     --chart-4: #f5be26;
     --chart-5: #f9b24e;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: #23262B;
     --foreground: #fafafa;
@@ -125,6 +126,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

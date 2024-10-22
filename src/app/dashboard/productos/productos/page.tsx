@@ -2,7 +2,7 @@ import FormContainer from "@/components/forms/form-container";
 import ProductoContainer from "./producto-container";
 import { getProducts } from "@/actions/product-actions";
 import { getCategoriesWithoutPermissions } from "@/actions/category-actions";
-import { getSuppliers } from "@/actions/supplier-actions";
+import { getSupplierWithoutPermissions } from "@/actions/supplier-actions";
 
 const headers = [
   { key: "productName", label: "Nombre Producto" },
@@ -18,7 +18,7 @@ const headers = [
 async function Page() {
   const productos = await getProducts()
 
-  const proveedores = await getSuppliers()
+  const proveedores = await getSupplierWithoutPermissions()
 
   const categorias = await getCategoriesWithoutPermissions()
 

@@ -28,13 +28,13 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
     resolver: zodResolver(productSchema),
     defaultValues: data
       ? {
-          productName: data.productName,
-          code: data.code,
-          description: data.description,
-          stockMinimo: data.stockMinimo,
-          categoryId: data.categoryId,
-          supplierId: data.supplierId,
-        }
+        productName: data.productName,
+        code: data.code,
+        description: data.description,
+        stockMinimo: data.stockMinimo,
+        categoryId: data.categoryId,
+        supplierId: data.supplierId,
+      }
       : {},
   });
 
@@ -154,7 +154,7 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
             <FormItem>
               <FormLabel>Stock Mínimo:</FormLabel>
               <FormControl>
-                <Input placeholder="10" {...field} type="number"/>
+                <Input placeholder="10" {...field} type="number" min={1} />
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
@@ -184,15 +184,15 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
           name="supplierId"
           render={({ field }) => (
             <FormItem>
-                <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4">
                 <FormLabel>Proveedor:</FormLabel>
                 <FormControl>
-                <Combobox
-                  options={supplierOptions}
-                  placeholder="Selecciona un proveedor"
-                  {...field} // Esto pasa `value` y `onChange`
-                />
-              </FormControl>
+                  <Combobox
+                    options={supplierOptions}
+                    placeholder="Selecciona un proveedor"
+                    {...field} // Esto pasa `value` y `onChange`
+                  />
+                </FormControl>
               </div>
               <FormMessage className="text-end" />
             </FormItem>
