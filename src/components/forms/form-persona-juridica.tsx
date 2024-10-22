@@ -1,28 +1,21 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { personaJuridicaSchema } from "@/utils/zod/schemas"
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { personaJuridicaSchema } from "@/utils/zod/schemas";
 
 export function FormClientePersonaJuridica() {
   const form = useForm<z.infer<typeof personaJuridicaSchema>>({
     resolver: zodResolver(personaJuridicaSchema),
-  })
+  });
 
   function onSubmit(values: z.infer<typeof personaJuridicaSchema>) {
-    console.log(values)
+    console.log(values);
   }
 
   return (
@@ -37,7 +30,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="Corporacion ..." {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -48,9 +41,19 @@ export function FormClientePersonaJuridica() {
             <FormItem>
               <FormLabel>RUC:</FormLabel>
               <FormControl>
-                <Input placeholder="20102020 ..." {...field} />
+                <Input
+                  placeholder="20102020 ..."
+                  {...field}
+                  onInput={(e) => {
+                    const inputElement = e.target as HTMLInputElement;
+                    const input = inputElement.value.replace(/\D/g, "");
+                    inputElement.value = input.slice(0, 11);
+                    field.onChange(inputElement.value);
+                  }}
+                  maxLength={11}
+                />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -63,7 +66,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="Juan perez ..." {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -76,7 +79,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="Gerente general" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -89,7 +92,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="gatitas@gatitas.com" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -100,9 +103,19 @@ export function FormClientePersonaJuridica() {
             <FormItem>
               <FormLabel>Número de teléfono:</FormLabel>
               <FormControl>
-                <Input placeholder="987654321" {...field} />
+                <Input
+                  placeholder="987654321 ..."
+                  {...field}
+                  onInput={(e) => {
+                    const inputElement = e.target as HTMLInputElement;
+                    const input = inputElement.value.replace(/\D/g, "");
+                    inputElement.value = input.slice(0, 9);
+                    field.onChange(inputElement.value);
+                  }}
+                  maxLength={9}
+                />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -115,7 +128,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="Jr. los pinos ..." {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -128,7 +141,7 @@ export function FormClientePersonaJuridica() {
               <FormControl>
                 <Input placeholder="pequeña/mediana/grande" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -137,5 +150,5 @@ export function FormClientePersonaJuridica() {
         </div>
       </form>
     </Form>
-  )
+  );
 }

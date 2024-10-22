@@ -1,13 +1,11 @@
 import { z } from 'zod';
 
 export const personaNaturalSchema = z.object({
-  firstName: z.string().min(3, { message: "El nombre es obligatorio" }),
-  lastName: z.string().min(3, "El apellido es obligatorio"),
-  identifier: z.string()
-    .regex(/^\d{8}$/, "La identificación debe tener 8 dígitos")
-    .optional(),
-  email: z.string().email("Correo electrónico no válido"),
-  phone: z.string()
+  firstName: z.string({required_error: "Ingrese nombre del cliente"}).min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
+  lastName: z.string({required_error: "Ingrese apellido del cliente"}).min(3, "El apellido debe tener al menos 3 caracteres"),
+  identifier: z.string({required_error: "Ingrese dni o pasaporte"}),
+  email: z.string({required_error: "Ingrese correo del cliente"}).email("Correo electrónico no válido"),
+  phone: z.string({required_error: "Ingrese número del cliente"})
     .regex(/^\d+$/, "El teléfono solo puede contener números")
     .min(9, "El teléfono debe tener al menos 9 dígitos"),
   address: z.string().optional(),
@@ -18,13 +16,13 @@ export const personaNaturalSchema = z.object({
 });
 
 export const personaJuridicaSchema = z.object({
-  companyName: z.string().min(5, "La razón social es obligatoria"),
-  ruc: z.string()
+  companyName: z.string({required_error: "Ingrese razón social"}).min(5, "La razón social debe tener al menos 5 caracteres"),
+  ruc: z.string({required_error: "Ingrese ruc de la compañia"})
     .regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
-  representativeName: z.string().min(1, "El nombre del representante es obligatorio"),
+  representativeName: z.string({required_error: "Ingrese nombre de representante"}).min(5, "Ingrese por lo menos 5 caracteres"),
   representativePosition: z.string().optional(),
-  companyEmail: z.string().email("Correo electrónico no válido"),
-  companyPhone: z.string()
+  companyEmail: z.string({required_error: "Ingrese correo de la compañia"}).email("Correo electrónico no válido"),
+  companyPhone: z.string({required_error: "Ingrese número de la compañia"})
     .regex(/^\d+$/, "El teléfono solo puede contener números")
     .min(9, "El teléfono debe tener al menos 9 dígitos"),
   companyAddress: z.string().optional(),

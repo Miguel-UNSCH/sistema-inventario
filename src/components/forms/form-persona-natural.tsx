@@ -1,29 +1,22 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { personaNaturalSchema } from "@/utils/zod/schemas"
-import { createPersonaNatural } from "@/lib/actions"
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { personaNaturalSchema } from "@/utils/zod/schemas";
+import { createPersonaNatural } from "@/lib/actions";
 
 export function FormClientePersonaNatural() {
   const form = useForm<z.infer<typeof personaNaturalSchema>>({
     resolver: zodResolver(personaNaturalSchema),
-  })
+  });
 
   function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
-    createPersonaNatural(values)
+    createPersonaNatural(values);
   }
 
   return (
@@ -38,7 +31,7 @@ export function FormClientePersonaNatural() {
               <FormControl>
                 <Input placeholder="Juan" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -51,7 +44,7 @@ export function FormClientePersonaNatural() {
               <FormControl>
                 <Input placeholder="Perez Perez" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -64,7 +57,7 @@ export function FormClientePersonaNatural() {
               <FormControl>
                 <Input placeholder="10203040" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -77,7 +70,7 @@ export function FormClientePersonaNatural() {
               <FormControl>
                 <Input placeholder="juanperez@gmail.com" {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -88,9 +81,19 @@ export function FormClientePersonaNatural() {
             <FormItem>
               <FormLabel>Número de celular:</FormLabel>
               <FormControl>
-                <Input placeholder="1987654321" {...field} />
+                <Input
+                  placeholder="987654321 ..."
+                  {...field}
+                  onInput={(e) => {
+                    const inputElement = e.target as HTMLInputElement;
+                    const input = inputElement.value.replace(/\D/g, "");
+                    inputElement.value = input.slice(0, 9);
+                    field.onChange(inputElement.value);
+                  }}
+                  maxLength={9}
+                />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -103,7 +106,7 @@ export function FormClientePersonaNatural() {
               <FormControl>
                 <Input placeholder="Calle los pinos mz D ..." {...field} />
               </FormControl>
-              <FormMessage className="text-end"/>
+              <FormMessage className="text-end" />
             </FormItem>
           )}
         />
@@ -112,5 +115,5 @@ export function FormClientePersonaNatural() {
         </div>
       </form>
     </Form>
-  )
+  );
 }
