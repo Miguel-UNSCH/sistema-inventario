@@ -2,7 +2,6 @@ import FormContainer from "@/components/forms/form-container";
 import ProductoContainer from "./producto-container";
 import { getProducts } from "@/actions/product-actions";
 import { getCategoriesWithoutPermissions } from "@/actions/category-actions";
-import { getSupplierWithoutPermissions } from "@/actions/supplier-actions";
 
 const headers = [
   { key: "productName", label: "Nombre Producto" },
@@ -10,15 +9,12 @@ const headers = [
   { key: "description", label: "Descripción" },
   { key: "stockMinimo", label: "Stock mínimo" },
   { key: "category", label: "Categoría" },
-  { key: "supplier", label: "Proveedor" },
   { key: "createdAt", label: "Creado" },
-  { key: "updatedAt", label: "Actualizado" }, // Campo de proveedor añadido
+  { key: "updatedAt", label: "Actualizado" },
 ];
 
 async function Page() {
   const productos = await getProducts()
-
-  const proveedores = await getSupplierWithoutPermissions()
 
   const categorias = await getCategoriesWithoutPermissions()
 
@@ -31,11 +27,10 @@ async function Page() {
   }
 
   const validCategories = Array.isArray(categorias) ? categorias : [];
-  const validSuppliers = Array.isArray(proveedores) ? proveedores : [];
 
   return (
     <FormContainer title="Productos">
-      <ProductoContainer data={productos} headers={headers} dataCategory={validCategories} dataSupplier={validSuppliers} />
+      <ProductoContainer data={productos} headers={headers} dataCategory={validCategories} />
     </FormContainer>
   );
 }

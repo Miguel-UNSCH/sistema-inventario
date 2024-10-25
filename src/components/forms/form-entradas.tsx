@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,87 +7,99 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { entradasSchema } from "@/utils/zod/schemas";
-// import { createRole, updateRole } from "@/lib/actions";
-// import { toast } from "sonner";
-// import { useRouter } from "next/navigation";
-// import toasterCustom from "../toaster-custom";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import toasterCustom from "../toaster-custom";
 import { Combobox } from "../select/combobox";
+import InputIcon from "../input/input-icon";
+import { createEntrada, updateEntrada } from "@/actions/entrada-actions";
+import { useEffect } from "react";
 
 interface ChildComponentProps {
   data: z.infer<typeof entradasSchema>;
   idEdit?: string;
+  unidadesOptions: Array<{ value: string; label: string }>;
+  productsOptions: Array<{ value: string; label: string }>;
+  supplierOptions: Array<{ value: string; label: string }>;
+  setItemEditing: (value: null) => void
 }
 
-export function FormEntrada({ data, idEdit }: ChildComponentProps) {
-  // const router = useRouter();
-  console.log(data);
+export function FormEntrada({ data, idEdit, unidadesOptions, productsOptions, supplierOptions, setItemEditing }: ChildComponentProps) {
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof entradasSchema>>({
     resolver: zodResolver(entradasSchema),
-    // defaultValues: data ? { role: data.role, description: data.description } : {}
+    defaultValues: data || {} 
   });
 
-  // async function onSubmitUpdate(id: string, values: z.infer<typeof entradasSchema>) {
-  //   console.log(values);
-  //   toasterCustom(0);
-  //   const data = await updateRole(id, values);
+   // Agrega este useEffect
+  useEffect(() => {
+    if (data) {
+      form.reset(data); // Aquí actualizas los valores del formulario
+    }
+  }, [data, form]);
 
-  //   if (!data) {
-  //     toasterCustom(500, "Ocurrió un error inesperado");
-  //     return;
-  //   }
+  async function onSubmitUpdate(id: string, values: z.infer<typeof entradasSchema>) {
+    console.log(values);
+    toasterCustom(0);
+    const data = await updateEntrada(id, values);
 
-  //   if (data.status === 200) {
-  //     toast.dismiss();
-  //     toasterCustom(data.status, data.message);
-  //     router.refresh(); // actualizar la tabla
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
 
-  //   } else if (data.status === 400) {
-  //     toast.dismiss();
-  //     toasterCustom(data.status, data.message);
-  //     form.setError("role", { type: "error", message: data.message });
-  //     form.setFocus("role");
-  //   }
-  // }
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh(); // actualizar la tabla
+      setItemEditing(null);
+      form.reset()
 
-  // async function onSubmitCreate(values: z.infer<typeof entradasSchema>) {
-  //   toasterCustom(0);
-  //   const data = await createRole(values);
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+    }
+  }
 
-  //   if (!data) {
-  //     toasterCustom(500, "Ocurrió un error inesperado");
-  //     return;
-  //   }
+  async function onSubmitCreate(values: z.infer<typeof entradasSchema>) {
+    toasterCustom(0);
 
-  //   if (data.status === 200) {
-  //     toast.dismiss();
-  //     toasterCustom(data.status, data.message);
-  //     router.refresh(); // actualizar la tabla
+    const data = await createEntrada(values);
 
-  //   } else if (data.status === 400) {
-  //     toast.dismiss();
-  //     toasterCustom(data.status, data.message);
-  //     form.setError("role", { type: "error", message: data.message });
-  //     form.setFocus("role");
-  //   }
-  // }
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh(); // actualizar la tabla
+      form.reset();
+
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+    }
+  }
 
   async function onSubmit(values: z.infer<typeof entradasSchema>) {
     console.log(values);
 
-    // if (idEdit) {
-    //   await onSubmitUpdate(idEdit, values);
-    // } else {
-    //   await onSubmitCreate(values);
-    // }
+    if (idEdit) {
+      await onSubmitUpdate(idEdit, values);
+    } else {
+      await onSubmitCreate(values);
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        <div className="flex gap-3">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
           <FormField
             control={form.control}
             name="productId"
@@ -94,32 +107,20 @@ export function FormEntrada({ data, idEdit }: ChildComponentProps) {
               <FormItem>
                 <FormLabel>Producto:</FormLabel>
                 <FormControl>
-                  <Combobox
-                    placeholder="seleccione"
-                    options={[
-                      { value: "id-product-1", label: "Laptop HP ProBook" },
-                      { value: "id-product-2", label: "Teléfono Samsung Galaxy S21" },
-                      { value: "id-product-3", label: "Monitor Dell UltraSharp" },
-                      { value: "id-product-4", label: "Impresora Epson EcoTank" },
-                      { value: "id-product-5", label: "Teclado Mecánico Corsair" },
-                      { value: "id-product-6", label: "Mouse Inalámbrico Logitech MX" },
-                      { value: "id-product-7", label: "Auriculares Sony WH-1000XM4" },
-                      { value: "id-product-8", label: "Disco Duro Externo Seagate 2TB" },
-                      { value: "id-product-9", label: "Tablet Apple iPad Pro" },
-                      { value: "id-product-10", label: "Cámara Canon EOS Rebel" },
-                      { value: "id-product-11", label: "Smartwatch Garmin Fenix 6" },
-                      { value: "id-product-12", label: "Router TP-Link Archer" },
-                      { value: "id-product-13", label: "Proyector Epson PowerLite" },
-                      { value: "id-product-14", label: "SSD Samsung 970 EVO" },
-                      { value: "id-product-15", label: "Smart TV LG OLED" },
-                      { value: "id-product-16", label: "Parlante Bluetooth JBL Charge" },
-                      { value: "id-product-17", label: "Microondas Panasonic Inverter" },
-                      { value: "id-product-18", label: "Refrigeradora LG Door-in-Door" },
-                      { value: "id-product-19", label: "Consola Sony PlayStation 5" },
-                      { value: "id-product-20", label: "Cafetera Nespresso Vertuo" },
-                    ]}
-                    {...field}
-                  />
+                  <Combobox placeholder="seleccione" options={productsOptions} {...field} />
+                </FormControl>
+                <FormMessage className="text-end" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="proveedorId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Proveedor:</FormLabel>
+                <FormControl>
+                  <Combobox placeholder="seleccione" options={supplierOptions} {...field} />
                 </FormControl>
                 <FormMessage className="text-end" />
               </FormItem>
@@ -132,32 +133,46 @@ export function FormEntrada({ data, idEdit }: ChildComponentProps) {
               <FormItem>
                 <FormLabel>Unidad de medida:</FormLabel>
                 <FormControl>
-                  <Combobox
-                    placeholder="seleccione"
-                    options={[
-                      { value: "id-und-medida-1", label: "Kilogramos (kg)" },
-                      { value: "id-und-medida-2", label: "Gramos (g)" },
-                      { value: "id-und-medida-3", label: "Litros (l)" },
-                      { value: "id-und-medida-4", label: "Mililitros (ml)" },
-                      { value: "id-und-medida-5", label: "Metros (m)" },
-                      { value: "id-und-medida-6", label: "Centímetros (cm)" },
-                      { value: "id-und-medida-7", label: "Milímetros (mm)" },
-                      { value: "id-und-medida-8", label: "Unidad (unidad)" },
-                      { value: "id-und-medida-9", label: "Paquete (paquete)" },
-                      { value: "id-und-medida-10", label: "Toneladas (ton)" },
-                      { value: "id-und-medida-11", label: "Onzas (oz)" },
-                      { value: "id-und-medida-12", label: "Libras (lb)" },
-                      { value: "id-und-medida-13", label: "Galones (gal)" },
-                      { value: "id-und-medida-14", label: "Metros cúbicos (m3)" },
-                      { value: "id-und-medida-15", label: "Centímetros cúbicos (cm3)" },
-                      { value: "id-und-medida-16", label: "Milímetros cúbicos (mm3)" },
-                      { value: "id-und-medida-17", label: "Kilovatios-hora (kWh)" },
-                      { value: "id-und-medida-18", label: "Unidad Térmica Británica (BTU)" },
-                      { value: "id-und-medida-19", label: "Metros cuadrados (m2)" },
-                      { value: "id-und-medida-20", label: "Pies (ft)" },
-                    ]}
-                    {...field}
-                  />
+                  <Combobox placeholder="seleccione" options={unidadesOptions} {...field} />
+                </FormControl>
+                <FormMessage className="text-end" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="precioCompra"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Precio de compra:</FormLabel>
+                <FormControl>
+                  <InputIcon icon={"S/."} placeholder="10" {...field} value={field.value || ''} type="number" />
+                </FormControl>
+                <FormMessage className="text-end" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="precioVenta"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Precio de venta:</FormLabel>
+                <FormControl>
+                  <InputIcon icon={"S/."} placeholder="12" {...field} value={field.value || ''} type="number" />
+                </FormControl>
+                <FormMessage className="text-end" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cantidad"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cantidad:</FormLabel>
+                <FormControl>
+                  <Input placeholder="10" {...field} value={field.value || ''} type="number" />
                 </FormControl>
                 <FormMessage className="text-end" />
               </FormItem>

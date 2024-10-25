@@ -7,8 +7,8 @@ interface InputIconProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 function InputIcon({ icon, ...props }: InputIconProps) {
   return (
-    <div className="relative w-full max-w-96">
-      <div className="absolute top-2.5 left-2">
+    <div className="relative w-full">
+      <div className="absolute top-1.5 left-2">
         {icon}
       </div>
       <Input {...props} className="pl-8"/>

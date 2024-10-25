@@ -49,7 +49,6 @@ export const productSchema = z.object({
     message: "El stock mínimo debe ser un número válido",
   }),
   categoryId: z.string({ required_error: "Seleccione una categoría" }).min(1, "La categoría es obligatoria"),
-  supplierId: z.string({ required_error: "Seleccione un proveedor" }).min(1, "El proveedor es obligatorio"),
 });
 
 
@@ -147,5 +146,6 @@ export const entradasSchema = z.object({
   ]).refine((val) => !isNaN(val), {
     message: "El precio debe ser un número válido",
   }),
-  unidadId: z.string({required_error: 'Seleccione unidad de medida'})
+  unidadId: z.string({required_error: 'Seleccione unidad de medida'}),
+  proveedorId: z.string({required_error: 'Seleccione un proveedor'}),
 })

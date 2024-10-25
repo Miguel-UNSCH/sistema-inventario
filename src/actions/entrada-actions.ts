@@ -4,12 +4,12 @@ import { auth } from "@/auth";
 import db from "@/lib/db";
 import { formatDateTime } from "@/lib/format-date";
 
-import { productSchema } from "@/utils/zod/schemas";
+import { entradasSchema } from "@/utils/zod/schemas";
 import { z } from "zod";
 
 // ==================== CRUD PRODUCTOS ==========================
 
-export async function getProducts() {
+export async function getEntradas() {
   try {
     const session = await auth();
 
@@ -41,43 +41,62 @@ export async function getProducts() {
       },
     });
 
-    const hasPermissionToCreate = permissions.some((perm) => perm.module === "productos" && perm.action === "leer");
+    const hasPermissionToCreate = permissions.some((perm) => perm.module === "entradas" && perm.action === "leer");
 
     console.log(hasPermissionToCreate);
 
     if (!hasPermissionToCreate) {
-      return { message: "No tienes permiso para ver los productos", status: 500 };
+      return { message: "No tienes permiso para ver las entradas", status: 500 };
     }
 
-    const products = await db.producto.findMany({
+    const entradas = await db.entrada.findMany({
       include: {
-        category: {
-            select: {
-                category: true,
-            },
-        },
-        createdBy: {
+        producto: {
           select: {
-                name: true,
+            id: true,
+            productName: true,
+            code: true,
+            categoryId: true,
+            category: {
+              select: {
+                category: true,
+              },
             },
-        }
+          },
+        },
+        unidad: {
+          select: {
+            id: true,
+            nombre: true,
+            simbolo: true,
+          },
+        },
+        proveedor: {
+          select: {
+            id: true,
+            supplierName: true,
+          },
+        },
       },
     });
 
     // Formatear los datos antes de devolver la respuesta
-    const formattedData = products.map((product) => ({
-        id: product.id,
-        productName: product.productName,
-        code: product.code,
-        description: product.description,
-        stockMinimo: product.stockMinimo,
-        categoryId: product.categoryId,
-        category: product.category.category,
-        createdById: product.createdById,
-        createdBy: product.createdBy?.name,
-        createdAt: formatDateTime(product.createdAt),
-        updatedAt: formatDateTime(product.updatedAt),
-      }));
+    const formattedData = entradas.map((entrada) => ({
+      id: entrada.id,
+      productId: entrada.producto.id,
+      productName: entrada.producto.productName,
+      code: entrada.producto.code,
+      cantidad: entrada.cantidad,
+      unidadId: entrada.unidad.id,
+      unidad: `${entrada.unidad.nombre} (${entrada.unidad.simbolo})`,
+      category: entrada.producto.category.category,
+      proveedorId: entrada.proveedor?.id,
+      supplier: entrada.proveedor?.supplierName,
+      precioCompra: entrada.precioCompra,
+      precioVenta: entrada.precioVenta,
+      createdAt: formatDateTime(entrada.createdAt),
+      updatedAt: formatDateTime(entrada.updatedAt),
+    }));
 
     return formattedData;
   } catch (error) {
@@ -85,7 +104,7 @@ export async function getProducts() {
   }
 }
 
-export async function createProducto(data: z.infer<typeof productSchema>) {
+export async function createEntrada(data: z.infer<typeof entradasSchema>) {
   try {
     const session = await auth();
 
@@ -117,52 +136,35 @@ export async function createProducto(data: z.infer<typeof productSchema>) {
       },
     });
 
-    const hasPermissionToCreate = permissions.some((perm) => perm.module === "productos" && perm.action === "crear");
+    console.log("Permisos del usuario:", permissions);
+
+    const hasPermissionToCreate = permissions.some((perm) => perm.module === "entradas" && perm.action === "crear");
 
     console.log(hasPermissionToCreate);
 
     if (!hasPermissionToCreate) {
-      return { message: "No tienes permiso para crear productos", status: 500 };
+      return { message: "No tienes permiso para crear entradas", status: 500 };
     }
 
-    const codeProduct = await db.producto.findUnique({
-      where: {
-        code: data.code,
-      },
-    });
-
-    if (codeProduct) {
-      return { message: "El código de producto ya existe", status: 400 };
-    }
-
-    const nameProductoFound = await db.producto.findFirst({
-      where: {
-        productName: data.productName,
-      },
-    });
-
-    if (nameProductoFound) {
-      return { message: "El nombre de producto ya existe", status: 400 };
-    }
-
-    await db.producto.create({
+    await db.entrada.create({
       data: {
-        productName: data.productName,
-        code: data.code,
-        description: data.description,
-        stockMinimo: data.stockMinimo,
-        categoryId: data.categoryId,
-        createdById: session.user.id,
+        productId: data.productId,
+        cantidad: data.cantidad,
+        precioCompra: data.precioCompra,
+        precioVenta: data.precioVenta,
+        unidadId: data.unidadId,
+        fechaEntrada: new Date(),
+        proveedorId: data.proveedorId,
       },
     });
 
-    return { message: "El producto se ha creado con éxito", status: 200 };
+    return { message: "La entrada se ha creado con éxito", status: 200 };
   } catch (error) {
     return { message: "error" + error, status: 500 };
   }
 }
 
-export async function updateProducto(id: string, data: z.infer<typeof productSchema>) {
+export async function updateEntrada(id: string, data: z.infer<typeof entradasSchema>) {
   try {
     const session = await auth();
 
@@ -194,34 +196,36 @@ export async function updateProducto(id: string, data: z.infer<typeof productSch
       },
     });
 
-    const hasPermissionToCreate = permissions.some((perm) => perm.module === "productos" && perm.action === "actualizar");
+    const hasPermissionToCreate = permissions.some((perm) => perm.module === "entradas" && perm.action === "actualizar");
 
     console.log(hasPermissionToCreate);
 
     if (!hasPermissionToCreate) {
-      return { message: "No tienes permiso para actualizar los productos", status: 500 };
+      return { message: "No tienes permiso para actualizar las entradas", status: 500 };
     }
 
-    const productFound = await db.producto.findFirst({
+    const entradaFound = await db.entrada.findFirst({
       where: {
         id: id,
       },
     });
 
-    if (!productFound) {
-      return { message: "El producto no existe", status: 400 };
+    if (!entradaFound) {
+      return { message: "La entrada no existe", status: 400 };
     }
 
-    await db.producto.update({
+    await db.entrada.update({
       where: {
         id: id,
       },
       data: {
-        productName: data.productName,
-        code: data.code,
-        stockMinimo: data.stockMinimo,
-        categoryId: data.categoryId,
-        description: data.description,
+        productId: data.productId,
+        cantidad: data.cantidad,
+        precioCompra: data.precioCompra,
+        precioVenta: data.precioVenta,
+        unidadId: data.unidadId,
+        fechaEntrada: new Date(),
+        proveedorId: data.proveedorId,
       },
     });
 
@@ -231,7 +235,7 @@ export async function updateProducto(id: string, data: z.infer<typeof productSch
   }
 }
 
-export async function deleteProducto(id: string) {
+export async function deleteEntrada(id: string) {
   try {
     const session = await auth();
 
@@ -263,59 +267,21 @@ export async function deleteProducto(id: string) {
       },
     });
 
-    const hasPermissionToCreate = permissions.some((perm) => perm.module === "productos" && perm.action === "eliminar");
+    const hasPermissionToCreate = permissions.some((perm) => perm.module === "entradas" && perm.action === "eliminar");
 
     console.log(hasPermissionToCreate);
 
     if (!hasPermissionToCreate) {
-      return { message: "No tienes permiso para eliminar los productos", status: 500 };
+      return { message: "No tienes permiso para eliminar las entradas", status: 500 };
     }
 
-    await db.producto.delete({
+    await db.entrada.delete({
       where: {
         id: id,
       },
     });
 
-    return { message: "El producto se ha eliminado con éxito", status: 200 };
-  } catch (error) {
-    return { message: "error" + error, status: 500 };
-  }
-}
-
-export async function getProductWithoutPermissions() {
-  try {
-    const products = await db.producto.findMany({
-      include: {
-        category: {
-            select: {
-                category: true,
-            },
-        },
-        createdBy: {
-          select: {
-                name: true,
-            },
-        }
-      },
-    });
-
-    // Formatear los datos antes de devolver la respuesta
-    const formattedData = products.map((product) => ({
-      id: product.id,
-      productName: product.productName,
-      code: product.code,
-      description: product.description,
-      stockMinimo: product.stockMinimo,
-      categoryId: product.categoryId,
-      category: product.category.category,
-      createdById: product.createdById,
-      createdBy: product.createdBy?.name,
-      createdAt: formatDateTime(product.createdAt),
-      updatedAt: formatDateTime(product.updatedAt),
-    }));
-
-  return formattedData;
+    return { message: "La entrada se ha eliminado con éxito", status: 200 };
   } catch (error) {
     return { message: "error" + error, status: 500 };
   }

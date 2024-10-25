@@ -15,17 +15,12 @@ interface ProductoContainerProps {
     data: Record<string, any>[];
     headers: { key: string; label: string }[];
     dataCategory: Record<string, any>[];
-    dataSupplier: Record<string, any>[];
 }
 
-function ProductoContainer({ data, headers, dataCategory, dataSupplier }: ProductoContainerProps) {
+function ProductoContainer({ data, headers, dataCategory }: ProductoContainerProps) {
 
     const categoryOptions = dataCategory.map(category => {
         return { value: String(category.id), label: String(category.category) }
-    })
-
-    const supplierOptions = dataSupplier.map(supplier => {
-        return { value: String(supplier.id), label: String(supplier.supplierName) }
     })
     
     const router = useRouter()
@@ -87,7 +82,7 @@ function ProductoContainer({ data, headers, dataCategory, dataSupplier }: Produc
                 description="Esta acción no se puede deshacer. Eliminará permanentemente el registro seleccionado."
             />
             <div className="flex justify-between gap-4">
-                <DialogForm setItemEditing={setItemEditing} open={open} setOpen={setOpen} textButton="Agregar una producto" titleDialog="REGISTRO DE PRODUCTO" descriptionDialog="Agrega un nuevo producto">
+                <DialogForm setItemEditing={setItemEditing} open={open} setOpen={setOpen} textButton="Agregar producto" titleDialog="REGISTRO DE PRODUCTO" descriptionDialog="Agrega un nuevo producto">
                     <FormProduct
                         setOpen={setOpen}
                         data={{
@@ -96,11 +91,9 @@ function ProductoContainer({ data, headers, dataCategory, dataSupplier }: Produc
                             description: itemEditing?.description,
                             stockMinimo: itemEditing?.stockMinimo,
                             categoryId: itemEditing?.categoryId,
-                            supplierId: itemEditing?.supplierId,
                         }}
                         idEdit={itemEditing?.id}
                         categoryOptions={categoryOptions}
-                        supplierOptions={supplierOptions}
                     />
                 </DialogForm>
             </div>

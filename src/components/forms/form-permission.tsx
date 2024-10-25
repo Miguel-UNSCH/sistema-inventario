@@ -114,9 +114,7 @@ export function FormPermission({ setOpen, data, idEdit, roleOptions }: ChildComp
                 <Combobox
                   placeholder="módulo"
                   options={[
-                    { value: "inicio", label: "Inicio" },
                     { value: "clientes", label: "Clientes" },
-                    { value: "reportes", label: "Reportes" },
                     { value: "categorias", label: "Productos Categorias" },
                     { value: "productos", label: "Productos" },
                     { value: "proveedores", label: "Proveedores" },

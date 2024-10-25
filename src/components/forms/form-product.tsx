@@ -18,10 +18,9 @@ interface ChildComponentProps {
   data: z.infer<typeof productSchema>;
   idEdit?: string;
   categoryOptions: Array<{ value: string; label: string }>;
-  supplierOptions: Array<{ value: string; label: string }>;
 }
 
-export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOptions }: ChildComponentProps) {
+export function FormProduct({ setOpen, data, idEdit, categoryOptions }: ChildComponentProps) {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof productSchema>>({
@@ -33,7 +32,6 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
         description: data.description,
         stockMinimo: data.stockMinimo,
         categoryId: data.categoryId,
-        supplierId: data.supplierId,
       }
       : {},
   });
@@ -171,25 +169,6 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions, supplierOp
                   <Combobox
                     options={categoryOptions}
                     placeholder="Selecciona una categoría"
-                    {...field} // Esto pasa `value` y `onChange`
-                  />
-                </FormControl>
-              </div>
-              <FormMessage className="text-end" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="supplierId"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex items-center gap-4">
-                <FormLabel>Proveedor:</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={supplierOptions}
-                    placeholder="Selecciona un proveedor"
                     {...field} // Esto pasa `value` y `onChange`
                   />
                 </FormControl>
