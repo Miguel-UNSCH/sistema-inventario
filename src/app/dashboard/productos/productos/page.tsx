@@ -14,8 +14,8 @@ const headers = [
 ];
 
 async function Page() {
+  
   const productos = await getProducts()
-
   const categorias = await getCategoriesWithoutPermissions()
 
   if (typeof productos === "object" && "status" in productos) {
