@@ -20,19 +20,18 @@ import {
 import { SelectProps } from "@radix-ui/react-select"
 
 export interface GenericSelectProps extends SelectProps {
-    options: Array<{ value: string; label: string }>;
-    onChange?: (value: string | null) => void;
-    placeholder: string;
-    value?: string;
+    options: Array<{ value: string; label: string }>
+    onChange?: (value: string | null) => void
+    placeholder: string
+    value?: string
 }
 
-// Cambia el componente a forwardRef
 export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
     ({ options, placeholder, onChange, value }, ref) => {
         const [open, setOpen] = React.useState(false)
         const [inputValue, setInputValue] = React.useState("")
 
-        // Filtrar las opciones basadas en el label
+        // Filtra las opciones según el valor ingresado
         const filteredOptions = options.filter(option =>
             option.label.toLowerCase().includes(inputValue.toLowerCase())
         )
@@ -41,15 +40,15 @@ export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
-                        ref={ref} // Asigna la ref aquí
+                        ref={ref}
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
                         className="w-full justify-between"
-                        onClick={() => setOpen(!open)} // Alterna la apertura
+                        onClick={() => setOpen(!open)}
                     >
                         {value
-                            ? options.find((option) => option.value === value)?.label
+                            ? options.find(option => option.value === value)?.label
                             : placeholder}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -60,19 +59,19 @@ export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
                             className="my-2 border-0 ring-1 ring-border border-border focus:ring-primary"
                             placeholder={`Search ${placeholder}...`}
                             value={inputValue}
-                            onValueChange={(val) => setInputValue(val)} // Actualizar el inputValue
+                            onValueChange={setInputValue}
                         />
                         <CommandList>
                             <CommandEmpty>No hay coincidencias.</CommandEmpty>
                             <CommandGroup>
-                                {filteredOptions.map((option) => (
+                                {filteredOptions.map(option => (
                                     <CommandItem
                                         key={option.value}
-                                        value={option.label} // Pasar label como valor de búsqueda
                                         onSelect={() => {
-                                            const selectedValue = option.value;
+                                            const selectedValue = option.value
                                             onChange?.(selectedValue === value ? null : selectedValue)
                                             setOpen(false)
+                                            setInputValue("") // Reinicia inputValue al seleccionar
                                         }}
                                     >
                                         <Check
@@ -91,6 +90,6 @@ export const Combobox = React.forwardRef<HTMLButtonElement, GenericSelectProps>(
             </Popover>
         )
     }
-);
+)
 
-Combobox.displayName = "Combobox"; // Asignamos un nombre al componente para depuración
+Combobox.displayName = "Combobox"

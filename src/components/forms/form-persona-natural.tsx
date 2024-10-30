@@ -8,15 +8,96 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { personaNaturalSchema } from "@/utils/zod/schemas";
-import { createPersonaNatural } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import toasterCustom from "../toaster-custom";
+import { toast } from "sonner";
+import { createClientNatural, updateClientNatural } from "@/actions/client-actions";
 
-export function FormClientePersonaNatural() {
+interface ChildComponentProps {
+  setOpen: (open: boolean) => void;
+  data: z.infer<typeof personaNaturalSchema>;
+  idEdit?: string;
+}
+
+export function FormClientePersonaNatural({ setOpen, data, idEdit } : ChildComponentProps) {
+  
+  const router = useRouter();
+  
   const form = useForm<z.infer<typeof personaNaturalSchema>>({
     resolver: zodResolver(personaNaturalSchema),
+    defaultValues: data
+      ? {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        identifier: data.identifier,
+        email: data.email,
+        phone: data.phone,
+        address: data.address
+      }
+      : {},
   });
 
-  function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
-    createPersonaNatural(values);
+  async function onSubmitUpdate(id: string, values: z.infer<typeof personaNaturalSchema>) {
+    toasterCustom(0);
+    const data = await updateClientNatural(id, values);
+
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh();
+
+      setOpen(false);
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
+    }
+  }
+
+  async function onSubmitCreate(values: z.infer<typeof personaNaturalSchema>) {
+    toasterCustom(0);
+    const data = await createClientNatural(values);
+
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh(); // actualizar la tabla
+
+      setOpen(false);
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      form.setError("identifier", { type: "error", message: data.message });
+      form.setFocus("identifier");
+
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
+    }
+  }
+
+  async function onSubmit(values: z.infer<typeof personaNaturalSchema>) {
+    if (idEdit) {
+      await onSubmitUpdate(idEdit, values);
+    } else {
+      await onSubmitCreate(values);
+    }
   }
 
   return (

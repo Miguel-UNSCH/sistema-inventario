@@ -8,14 +8,98 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { personaJuridicaSchema } from "@/utils/zod/schemas";
+import toasterCustom from "../toaster-custom";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { createClientJuridico, updateClientJuridico } from "@/actions/client-actions";
 
-export function FormClientePersonaJuridica() {
+interface ChildComponentProps {
+  setOpen: (open: boolean) => void;
+  data: z.infer<typeof personaJuridicaSchema>;
+  idEdit?: string;
+}
+
+export function FormClientePersonaJuridica({ setOpen, data, idEdit } : ChildComponentProps) {
+  
+  const router = useRouter();
+  
   const form = useForm<z.infer<typeof personaJuridicaSchema>>({
     resolver: zodResolver(personaJuridicaSchema),
+    defaultValues: data
+      ? {
+        companyName: data.companyName,
+        ruc: data.ruc,
+        representativeName: data.representativeName,
+        representativePosition: data.representativePosition,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        companyType: data.companyType
+      }
+      : {},
   });
 
-  function onSubmit(values: z.infer<typeof personaJuridicaSchema>) {
-    console.log(values);
+  async function onSubmitUpdate(id: string, values: z.infer<typeof personaJuridicaSchema>) {
+    toasterCustom(0);
+    const data = await updateClientJuridico(id, values);
+
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh();
+
+      setOpen(false);
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
+    }
+  }
+
+  async function onSubmitCreate(values: z.infer<typeof personaJuridicaSchema>) {
+    toasterCustom(0);
+    const data = await createClientJuridico(values);
+
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      router.refresh(); // actualizar la tabla
+
+      setOpen(false);
+    } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      form.setError("ruc", { type: "error", message: data.message });
+      form.setFocus("ruc");
+
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
+    }
+  }
+
+  async function onSubmit(values: z.infer<typeof personaJuridicaSchema>) {
+    if (idEdit) {
+      await onSubmitUpdate(idEdit, values);
+    } else {
+      await onSubmitCreate(values);
+    }
   }
 
   return (
@@ -85,7 +169,7 @@ export function FormClientePersonaJuridica() {
         />
         <FormField
           control={form.control}
-          name="companyEmail"
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Correo de la empresa:</FormLabel>
@@ -98,7 +182,7 @@ export function FormClientePersonaJuridica() {
         />
         <FormField
           control={form.control}
-          name="companyPhone"
+          name="phone"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Número de teléfono:</FormLabel>
@@ -121,7 +205,7 @@ export function FormClientePersonaJuridica() {
         />
         <FormField
           control={form.control}
-          name="companyAddress"
+          name="address"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Dirección de la empresa:</FormLabel>

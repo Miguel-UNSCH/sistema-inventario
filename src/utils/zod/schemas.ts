@@ -21,11 +21,11 @@ export const personaJuridicaSchema = z.object({
     .regex(/^\d{11}$/, "El RUC debe tener 11 dígitos"),
   representativeName: z.string({required_error: "Ingrese nombre de representante"}).min(5, "Ingrese por lo menos 5 caracteres"),
   representativePosition: z.string().optional(),
-  companyEmail: z.string({required_error: "Ingrese correo de la compañia"}).email("Correo electrónico no válido"),
-  companyPhone: z.string({required_error: "Ingrese número de la compañia"})
+  email: z.string({required_error: "Ingrese correo de la compañia"}).email("Correo electrónico no válido"),
+  phone: z.string({required_error: "Ingrese número de la compañia"})
     .regex(/^\d+$/, "El teléfono solo puede contener números")
     .min(9, "El teléfono debe tener al menos 9 dígitos"),
-  companyAddress: z.string().optional(),
+  address: z.string().optional(),
   companyType: z.enum(["pequeña", "mediana", "grande"]).optional(),
   createdBy: z.object({
     userId: z.string(),  // ID del usuario que registra
@@ -149,3 +149,27 @@ export const entradasSchema = z.object({
   unidadId: z.string({required_error: 'Seleccione unidad de medida'}),
   proveedorId: z.string({required_error: 'Seleccione un proveedor'}),
 })
+
+export const salidasSchema = z.object({
+  clientId: z.string({ required_error: "Seleccione un cliente" }),
+  entradaId: z.string({ required_error: "Seleccione un producto" }),
+  cantidad:z.union([
+    z.string({required_error: 'Ingrese cantidad'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "La cantidad debe ser un número válido",
+  }),
+  precioVenta: z.union([
+    z.string({required_error: 'Ingrese Precio de venta'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "La cantidad debe ser un número válido",
+  }),
+  tipoDescuento: z.string().optional(),
+  descuento: z.union([
+    z.string({required_error: 'Ingrese cantidad'}).transform((val) => parseFloat(val)),
+    z.number() // Acepta números
+  ]).refine((val) => !isNaN(val), {
+    message: "La cantidad debe ser un número válido",
+  }).optional(),
+});

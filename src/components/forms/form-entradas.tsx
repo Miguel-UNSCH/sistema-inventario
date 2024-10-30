@@ -61,6 +61,9 @@ export function FormEntrada({ data, idEdit, unidadesOptions, productsOptions, su
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message);
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
     }
   }
 
@@ -81,6 +84,9 @@ export function FormEntrada({ data, idEdit, unidadesOptions, productsOptions, su
       form.reset();
 
     } else if (data.status === 400) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+    } else {
       toast.dismiss();
       toasterCustom(data.status, data.message);
     }
