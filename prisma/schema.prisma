@@ -18,51 +18,41 @@ datasource db {
   // url = env("POSTGRES_PRISMA_URL")
 }
 
-// Tabla de clientes (Personas Naturales y Jurídicas)
-
-model PersonaNatural {
-  id          String  @id @default(cuid())
-  firstName   String
-  lastName    String
-  identifier  String? @unique // Campo opcional, 8 dígitos
-  email       String  @unique
-  phone       String
-  address     String?
-  createdBy   User?   @relation(fields: [createdById], references: [id])
-  createdById String?
-
-  boletas  Boleta[]
-  facturas Factura[]
-  salidas  Salida[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([identifier, email]) // Garantiza unicidad en identifier y email
-}
-
-model PersonaJuridica {
+model Cliente {
   id                     String  @id @default(cuid())
-  companyName            String
-  ruc                    String  @unique // RUC, 11 dígitos
-  representativeName     String
+  tipoCliente            String  // "PersonaNatural" o "PersonaJuridica"
+  
+  // Campos para Persona Natural
+  firstName              String?
+  lastName               String?
+  identifier             String? @unique // Campo opcional, 8 dígitos para persona natural
+  
+  // Campos para Persona Jurídica
+  companyName            String?
+  ruc                    String? @unique // RUC, 11 dígitos para persona jurídica
+  representativeName     String?
   representativePosition String?
-  companyEmail           String  @unique
-  companyPhone           String
-  companyAddress         String?
-  companyType            String
+  companyType            String?
+  
+  // Campos comunes
+  email                  String
+  phone                  String
+  address                String?
+  
   createdBy              User?   @relation(fields: [createdById], references: [id])
   createdById            String?
 
-  boletas  Boleta[]
-  facturas Factura[]
-  salidas  Salida[]
+  boletas                Boleta[]
+  facturas               Factura[]
+  salidas                Salida[]
+  salidaDetalles         SalidaDetalle[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
-  @@unique([ruc, companyEmail]) // Garantiza unicidad en RUC y email
+  @@unique([identifier, ruc]) // Garantiza unicidad en campos clave
 }
+
 
 // Tabla de categorías de productos
 model Categoria {
@@ -81,6 +71,7 @@ model UnidadMedida {
   nombre   String    @unique
   simbolo  String // Ej: kg, und, doc, caja, etc.
   entradas Entrada[]
+  salidas  Salida[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -173,11 +164,8 @@ model Boleta {
   numero       String   @unique
   fechaEmision DateTime @default(now())
 
-  clienteNaturalId String?
-  clienteNatural   PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
-
-  clienteJuridicoId String?
-  clienteJuridico   PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+  clienteId String?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
 
   proveedorId String?
   proveedor   Proveedor? @relation(fields: [proveedorId], references: [id])
@@ -198,11 +186,8 @@ model Factura {
   numero       String   @unique
   fechaEmision DateTime @default(now())
 
-  clienteNaturalId String?
-  clienteNatural   PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
-
-  clienteJuridicoId String?
-  clienteJuridico   PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+  clienteId String?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
 
   proveedorId String?
   proveedor   Proveedor? @relation(fields: [proveedorId], references: [id])
@@ -247,6 +232,8 @@ model Entrada {
   productId      String
   producto       Producto   @relation(fields: [productId], references: [id])
   cantidad       Float
+  cantidadVendida Float          @default(0)
+  enReserva       Float          @default(0)
   precioCompra   Float
   precioVenta    Float
   unidadId       String
@@ -257,30 +244,54 @@ model Entrada {
   proveedorId    String?
   proveedor      Proveedor? @relation(fields: [proveedorId], references: [id])
   
+  salida         Salida[]
+
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 }
 
 // Modelo para registrar salidas (ventas)
 model Salida {
-  id            String   @id @default(cuid())
-  productId     String
-  producto      Producto @relation(fields: [productId], references: [id])
-  cantidad      Int
-  precioVenta   Float
-  descuento     Float? // El descuento puede ser opcional
-  tipoDescuento String? // Nuevo campo para tipo de descuento como String
-  fechaSalida   DateTime @default(now())
+  id                  String   @id @default(cuid())
+  productId           String
+  producto            Producto @relation(fields: [productId], references: [id])
+  cantidad            Float
+  precioVenta         Float
+  descuento           Float? // El descuento puede ser opcional
+  tipoDescuento       String? // Nuevo campo para tipo de descuento como String
+  precioVentaTotal    Float
+  fechaSalida         DateTime @default(now())
+  estado              String
 
-  clienteNaturalId String?
-  clienteNatural   PersonaNatural? @relation(fields: [clienteNaturalId], references: [id])
+  clienteId String?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
 
-  clienteJuridicoId String?
-  clienteJuridico   PersonaJuridica? @relation(fields: [clienteJuridicoId], references: [id])
+  unidadId       String
+  unidad         UnidadMedida @relation(fields: [unidadId], references: [id])
+
+  entradaId           String
+  entrada             Entrada  @relation(fields: [entradaId], references: [id])
+
+  salidaDetalleId      String
+  salidaDetalle         SalidaDetalle @relation(fields: [salidaDetalleId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model SalidaDetalle {
+  id          String   @id @default(cuid())
+  estado      String
+  clientId    String
+  cliente    Cliente  @relation(fields: [clientId], references: [id])
+
+  salidas     Salida[]
+  precioVentaTotal Float
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 
 // Tabla de stock actual de productos
 model Stock {
@@ -310,8 +321,7 @@ model User {
   roleId        String? // Relación con el rol
   role          Role?     @relation(fields: [roleId], references: [id], onDelete: SetNull)
 
-  personaNaturales PersonaNatural[]
-  personaJuridicas PersonaJuridica[]
+  clientes         Cliente[]
   productos        Producto[]
   movimientos      MovimientoInventario[]
 

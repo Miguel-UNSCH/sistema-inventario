@@ -17,6 +17,7 @@ interface ConfirmDialogProps {
   onConfirm: () => void
   title: string
   description: string
+  styleButton?: string
 }
 
 export function ConfirmDialog(
@@ -26,6 +27,7 @@ export function ConfirmDialog(
     onConfirm,
     title,
     description,
+    styleButton
   } :
   ConfirmDialogProps
 ) {
@@ -40,7 +42,7 @@ export function ConfirmDialog(
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className="bg-destructive">Continuar</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm} className={`bg-destructive ${styleButton}`}>Continuar</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

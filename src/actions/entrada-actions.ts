@@ -286,3 +286,57 @@ export async function deleteEntrada(id: string) {
     return { message: "error" + error, status: 500 };
   }
 }
+
+export async function getEntradasWithoutPermissions() {
+  try {
+    const entradas = await db.entrada.findMany({
+      where: {
+        // Filtra solo las entradas donde la cantidad es mayor que la cantidad vendida
+        cantidad: {
+          gt: db.entrada.fields.cantidadVendida,
+        },
+      },
+      select: {
+        id: true,
+        cantidad: true,
+        cantidadVendida: true,
+        enReserva: true,
+        precioCompra: true,
+        precioVenta: true,
+        unidad: {
+          select: {
+            id: true,
+            nombre: true,
+            simbolo: true,
+          },
+        },
+        producto: {
+          select: {
+            id: true,
+            productName: true,
+          },
+        },
+        proveedor: {
+          select: {
+            id: true,
+            supplierName: true,
+          },
+        }
+      },
+    });
+
+    // Formatea los resultados para devolver solo id y productName
+    const formattedData = entradas.map((entrada) => {
+      const stockDisponible = entrada.cantidad - entrada.cantidadVendida - entrada.enReserva;
+      return {
+        id: entrada.id,
+        productName: `${entrada.producto.productName}, ${entrada.proveedor?.supplierName}, ${stockDisponible} (${entrada.unidad.nombre})`,
+      }
+    });
+
+    return formattedData;
+  } catch (error) {
+    return { message: "Error al obtener las entradas: " + error, status: 500 };
+  }
+}
+
