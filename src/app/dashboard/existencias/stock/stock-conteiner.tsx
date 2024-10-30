@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"; // Indica que este componente es un Client Component
 
 import { useState, useEffect } from "react";
