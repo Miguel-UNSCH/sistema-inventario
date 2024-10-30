@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
-
 import {
     Card,
     CardContent,
@@ -17,59 +16,46 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const chartData = {
-    label: "Electrónicos",
-    products: [
-        { name: "Televisor", cantidad: 50 },
-        { name: "Computadora", cantidad: 30 },
-        { name: "Teléfono", cantidad: 70 },
-        { name: "Tablet", cantidad: 60 },
-        { name: "Cámara", cantidad: 40 },
-        { name: "Auriculares", cantidad: 90 },
-        { name: "MP3", cantidad: 100 },
-        { name: "Proyector", cantidad: 20 },
-        { name: "Videojuegos", cantidad: 25 },
-        { name: "Teclado", cantidad: 80 },
-        { name: "Ratón", cantidad: 60 },
-        { name: "Impresora", cantidad: 15 },
-        { name: "Altavoces", cantidad: 45 },
-        { name: "Smartwatch", cantidad: 55 },
-        { name: "HDMI", cantidad: 150 },
-        { name: "Cargador", cantidad: 120 },
-        { name: "Cargador", cantidad: 70 },
-        { name: "Teléfono", cantidad: 20 },
-        { name: "Pantalla", cantidad: 30 },
-        { name: "Micrófono", cantidad: 50 },
-        { name: "Accesorios", cantidad: 80 },
-    ],
-};
+interface CustomBarChartProps {
+    data: {
+        label: string;
+        products: { name: string; cantidad: number }[];
+    };
+}
 
 const chartConfig = {
-    alto: {
-        label: "Alto",
+    abundante: {
+        label: "Abundante",
         color: "var(--chart-2)",
     },
-    bajo: {
-        label: "Bajo",
+    escaso: {
+        label: "Escaso",
         color: "var(--chart-3)",
+    },
+    agotado: {
+        label: "Agotado",
+        color: "var(--chart-4)",
     },
 } satisfies ChartConfig
 
-export function CustomBarChart() {
-    const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("alto")
+export function CustomBarChart({ data }: CustomBarChartProps) {
+    const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("abundante")
 
     const filteredData = React.useMemo(() => {
-        return chartData.products.filter((item) =>
-            activeChart === "alto" ? item.cantidad > 20 : item.cantidad <= 20
+        return data.products.filter((item) =>
+            activeChart === "abundante" ? item.cantidad > 10 :
+                activeChart === "escaso" ? (item.cantidad > 0 && item.cantidad <= 10) :
+                    item.cantidad === 0
         )
-    }, [activeChart])
+    }, [activeChart, data.products])
 
     const total = React.useMemo(
         () => ({
-            alto: chartData.products.filter((item) => item.cantidad > 20).length,
-            bajo: chartData.products.filter((item) => item.cantidad <= 20).length,
+            abundante: data.products.filter((item) => item.cantidad > 10).length,
+            escaso: data.products.filter((item) => item.cantidad > 0 && item.cantidad <= 10).length,
+            agotado: data.products.filter((item) => item.cantidad === 0).length,
         }),
-        [chartData]
+        [data.products]
     )
 
     return (
@@ -77,10 +63,10 @@ export function CustomBarChart() {
             <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                     <CardTitle>ALMACEN</CardTitle>
-                    <CardDescription>{`Total de productos en la categoría: ${chartData.label}`}</CardDescription>
+                    <CardDescription>{`Total de productos en la categoría: ${data.label}`}</CardDescription>
                 </div>
                 <div className="flex">
-                    {["alto", "bajo"].map((key) => {
+                    {["abundante", "escaso", "agotado"].map((key) => {
                         const chart = key as keyof typeof total
                         return (
                             <div
@@ -90,7 +76,7 @@ export function CustomBarChart() {
                                 onClick={() => setActiveChart(chart)}
                             >
                                 <span className="text-xs text-muted-foreground">
-                                    {chart === "alto" ? "Abundante" : "Escasos"}
+                                    {chartConfig[chart].label}
                                 </span>
                                 <span className="text-lg font-bold leading-none sm:text-3xl">
                                     {total[chart].toLocaleString()}

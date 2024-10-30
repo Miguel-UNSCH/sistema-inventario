@@ -9,13 +9,13 @@ datasource db {
   // local
 
   // development
-  // provider = "sqlite"
-  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 
   // production
-  
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
+
+  // provider = "postgresql"
+  // url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Cliente {
@@ -239,7 +239,7 @@ model Entrada {
   unidadId       String
   unidad         UnidadMedida @relation(fields: [unidadId], references: [id])
 
-  fechaEntrada   DateTime   @default(now())
+  fechaEntrada DateTime @default(now())
 
   proveedorId    String?
   proveedor      Proveedor? @relation(fields: [proveedorId], references: [id])

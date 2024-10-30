@@ -169,7 +169,7 @@ export function FormProduct({ setOpen, data, idEdit, categoryOptions }: ChildCom
                   <Combobox
                     options={categoryOptions}
                     placeholder="Selecciona una categoría"
-                    {...field} // Esto pasa `value` y `onChange`
+                    {...field}
                   />
                 </FormControl>
               </div>
