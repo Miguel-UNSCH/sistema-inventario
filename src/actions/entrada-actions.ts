@@ -87,6 +87,8 @@ export async function getEntradas() {
       productName: entrada.producto.productName,
       code: entrada.producto.code,
       cantidad: entrada.cantidad,
+      cantidadVendida: entrada.cantidadVendida,
+      reserva: entrada.enReserva,
       unidadId: entrada.unidad.id,
       unidad: `${entrada.unidad.nombre} (${entrada.unidad.simbolo})`,
       category: entrada.producto.category.category,
