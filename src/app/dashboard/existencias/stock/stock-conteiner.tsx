@@ -41,9 +41,9 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
         // Calcula las cantidades de productos
         const productQuantities = filteredEntries.reduce((acc, item) => {
             if (acc[item.productName]) {
-                acc[item.productName] += item.cantidad;
+                acc[item.productName] += item.cantidad - item.cantidadVendida - item.reserva ;
             } else {
-                acc[item.productName] = item.cantidad;
+                acc[item.productName] = item.cantidad - item.cantidadVendida - item.reserva;
             }
             return acc;
         }, {});
