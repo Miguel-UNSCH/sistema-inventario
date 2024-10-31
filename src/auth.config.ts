@@ -23,7 +23,7 @@ export default {
         // Verificar si existe el usuario en la base de datos
         const user = await db.user.findFirst({
           where: {
-            OR: [{ user: data.username }, { email: data.username }],
+            OR: [{ user: data.username }, { email: data.username.toLowerCase() }],
           },
           include: {
             role: true,
@@ -45,6 +45,7 @@ export default {
           id: user.id,
           name: user.name,
           email: user.email,
+          user: user.user,
           role: user.role?.name,
         };
       },

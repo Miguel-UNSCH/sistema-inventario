@@ -3,7 +3,6 @@ import { GoHomeFill } from "react-icons/go";
 import { HiDocumentChartBar } from "react-icons/hi2";
 import { FaCartPlus, FaShoppingCart, FaUserCog, FaUsers, FaUserShield } from "react-icons/fa";
 import { RiUserVoiceFill } from "react-icons/ri";
-import { IoSettings } from "react-icons/io5";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { AiOutlineStock } from "react-icons/ai";
 
@@ -96,11 +95,6 @@ export const SIDEBAR_USER_HELP: SidebarMenu = {
       label: 'Cuenta',
       href: '/dashboard/cuenta',
       icon: <RiUserVoiceFill className="h-5 w-5"/>,
-    },
-    {
-      label: 'Configuración general',
-      href: '/dashboard/configuracion',
-      icon: <IoSettings className="h-5 w-5"/>,
     },
   ]
 }

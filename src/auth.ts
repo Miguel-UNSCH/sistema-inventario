@@ -21,12 +21,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.id = user.id;  // Asignar solo si user.id es un string
         }
         token.role = user.role;  // Asegúrate de que esto sea correcto
+        token.user = user.user;
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id; // Incluye el ID en la sesión
       session.user.role = token.role; // Incluye el rol en la sesión
+      session.user.user = token.user; //
       return session;
     },
     authorized: async ({auth}) => {

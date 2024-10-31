@@ -173,3 +173,19 @@ export const salidasSchema = z.object({
     message: "La cantidad debe ser un número válido",
   }).optional(),
 });
+
+// Esquema para actualizar el usuario
+export const updateUserSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().email({ message: "Debe ser un correo electrónico válido" }).optional(),
+  user: z.string({ required_error: "El nombre de usuario es obligatorio" }),
+  password: z.string({ required_error: "Campo obligatorio" })
+    .min(1, "Campo obligatorio"),
+  newPassword: z.string({ required_error: "Campo obligatorio" })
+    .min(8, "La nueva contraseña debe tener al menos 8 caracteres"),
+  confirmNewPassword: z.string({ required_error: "Campo obligatorio" })
+}).refine((data) => !data.newPassword || data.newPassword === data.confirmNewPassword, {
+  message: "La nueva contraseña y la confirmación no coinciden",
+  path: ["confirmNewPassword"],
+});
