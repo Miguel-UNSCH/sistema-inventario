@@ -8,8 +8,8 @@ import { getCategoriesWithoutPermissions } from "@/actions/category-actions";
 import { getProductWithoutPermissions } from "@/actions/product-actions";
 import { getSupplierWithoutPermissions } from "@/actions/supplier-actions";
 import { CardBlocks } from "@/components/blocks/card";
-import { CustomAreaChart } from "./pieChart-conteiner";
 import { getSalidasWithoutpermissions } from "@/actions/salida-actions";
+import { CustomAreaChart } from "./pieChart-conteiner";
 
 function Page({ session }: { session: Session | null }) {
   const [categorias, setCategorias] = useState<Array<any> | null>(null);
