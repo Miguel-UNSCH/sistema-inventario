@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { roleSchema } from "@/utils/zod/schemas"
-import { createRole, updateRole } from "@/lib/actions"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import toasterCustom from "../toaster-custom"
+import { createRole, updateRole } from "@/actions/role-actions"
 
 interface ChildComponentProps {
   setOpen: (open: boolean) => void;
@@ -55,6 +55,11 @@ export function FormRole({ setOpen, data, idEdit }: ChildComponentProps) {
       toasterCustom(data.status, data.message);
       form.setError("role", { type: "error", message: data.message });
       form.setFocus("role");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
@@ -78,6 +83,11 @@ export function FormRole({ setOpen, data, idEdit }: ChildComponentProps) {
       toasterCustom(data.status, data.message);
       form.setError("role", { type: "error", message: data.message });
       form.setFocus("role");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 

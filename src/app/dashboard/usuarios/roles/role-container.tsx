@@ -6,10 +6,10 @@ import { DialogForm } from "@/components/dialog/dialog-form";
 import { FormRole } from "@/components/forms/form-role";
 import CustomDataTable from "@/components/table/custom-data-table";
 import toasterCustom from "@/components/toaster-custom";
-import { deleteRole } from "@/lib/actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
+import { deleteRole } from "@/actions/role-actions";
 
 interface RoleContainerProps {
   data: Record<string, any>[];
@@ -59,6 +59,11 @@ function RoleContainer({ data, headers }: RoleContainerProps) {
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message)
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 

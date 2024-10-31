@@ -5,11 +5,11 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog";
 import { DialogForm } from "@/components/dialog/dialog-form";
 import CustomDataTable from "@/components/table/custom-data-table";
 import toasterCustom from "@/components/toaster-custom";
-import { deleteUser } from "@/lib/actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
 import { FormUser } from "@/components/forms/form-user";
+import { deleteUserAdmin } from "@/actions/user-actions";
 
 interface UserContainerProps {
   data: Record<string, any>[];
@@ -48,7 +48,7 @@ function UsuariosContainer({ data, headers, dataRoles } : UserContainerProps) {
   const handleDelete = async () => {
     setOpenConfirm(false);
     toasterCustom(0, "Eliminando")
-    const data = await deleteUser(itemDeleted?.id);
+    const data = await deleteUserAdmin(itemDeleted?.id);
     if (!data) {
       toasterCustom(500, "Ocurrió un error inesperado")
       return;
@@ -64,10 +64,13 @@ function UsuariosContainer({ data, headers, dataRoles } : UserContainerProps) {
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message)
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
-
-  console.log(itemEditing);
 
   return (
     <>

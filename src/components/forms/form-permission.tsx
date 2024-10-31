@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation"
 import toasterCustom from "../toaster-custom"
 import { SelectFilter } from "../select/select-filter";
 import { Combobox } from "../select/combobox";
-import { createPermission, updatePermission } from "@/lib/actions";
+import { createPermission, updatePermission } from "@/actions/permission-actions";
 
 interface ChildComponentProps {
   setOpen: (open: boolean) => void;
@@ -50,6 +50,11 @@ export function FormPermission({ setOpen, data, idEdit, roleOptions }: ChildComp
       toasterCustom(data.status, data.message);
       form.setError("roleId", { type: "error", message: data.message });
       form.setFocus("roleId");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
@@ -73,6 +78,11 @@ export function FormPermission({ setOpen, data, idEdit, roleOptions }: ChildComp
       toasterCustom(data.status, data.message);
       form.setError("roleId", { type: "error", message: data.message });
       form.setFocus("roleId");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 

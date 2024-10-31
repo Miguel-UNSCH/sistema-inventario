@@ -1,6 +1,8 @@
 import FormContainer from "@/components/forms/form-container";
 import RoleContainer from "./role-container";
 import PermissionContainer from "./permission-container";
+import { getRoles } from "@/actions/role-actions";
+import { getPermissions } from "@/actions/permission-actions";
 
 const headersRole = [
   { key: "name", label: "Nombre" },
@@ -20,15 +22,24 @@ const headersPermissions = [
 ]
 
 async function Page() {
-  const API_ROLES_URL = process.env.HOST_URL + "/api/roles";
-  const API_PERMISOS_URL = process.env.HOST_URL + "/api/permisos";
-  const res = await fetch(API_ROLES_URL, { cache: "no-store" });
-  const roles = await res.json();
+  const roles = await getRoles();
+  const permisos = await getPermissions();
 
-  const resP = await fetch(API_PERMISOS_URL, { cache: "no-store" });
-  const permisos = await resP.json();
+  if (typeof roles === "object" && "status" in roles) {
+    return (
+      <FormContainer title="Roles">
+        <h1>{roles.message}</h1>
+      </FormContainer>
+    );
+  }
 
-  console.log(roles);
+  if (typeof permisos === "object" && "status" in permisos) {
+    return (
+      <FormContainer title="Roles">
+        <h1>{permisos.message}</h1>
+      </FormContainer>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">

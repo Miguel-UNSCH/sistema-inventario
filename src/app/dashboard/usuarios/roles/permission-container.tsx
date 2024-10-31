@@ -5,11 +5,11 @@ import { ConfirmDialog } from "@/components/dialog/confirm-dialog";
 import { DialogForm } from "@/components/dialog/dialog-form";
 import CustomDataTable from "@/components/table/custom-data-table";
 import toasterCustom from "@/components/toaster-custom";
-import { deletePermission } from "@/lib/actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
 import { FormPermission } from "@/components/forms/form-permission";
+import { deletePermission } from "@/actions/permission-actions";
 
 interface RoleContainerProps {
   data: Record<string, any>[];
@@ -64,6 +64,11 @@ function PermissionContainer({ data, headers, dataRoles } : RoleContainerProps) 
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message)
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
