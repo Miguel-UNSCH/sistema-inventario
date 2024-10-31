@@ -9,6 +9,53 @@ import { z } from "zod";
 
 // ==================== CRUD PRODUCTOS ==========================
 
+export async function getSalidasWithoutpermissions() {
+  try {
+    const salidas = await db.salida.findMany({
+      include: {
+        producto: {
+          select: {
+            id: true,
+            productName: true,
+            code: true,
+            categoryId: true,
+            category: {
+              select: {
+                category: true,
+              },
+            },
+          },
+        },
+        unidad: {
+          select: {
+            id: true,
+            nombre: true,
+            simbolo: true,
+          },
+        },
+      },
+    });
+
+    // Agrupar productos por cantidad de ventas y ordenar en orden descendente
+    const productSales = salidas.reduce((acc, salida) => {
+      const productName = salida.producto.productName;
+      acc[productName] = (acc[productName] || 0) + salida.cantidad;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Obtener los 6 productos más vendidos
+    const topProducts = Object.entries(productSales)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6)
+      .map(([productName, cantidad]) => ({ productName, cantidad }));
+
+    return topProducts;
+  } catch (error) {
+    return { message: "error" + error, status: 500 };
+  }
+}
+
+
 export async function getSalidas(idClient: string) {
   try {
     const session = await auth();
