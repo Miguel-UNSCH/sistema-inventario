@@ -11,8 +11,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import toasterCustom from "../toaster-custom";
 import { Combobox } from "../select/combobox";
-import { createUser, updateUser } from "@/lib/actions";
 import { Input } from "../ui/input";
+import { createUser, updateUserAdmin } from "@/actions/user-actions";
 
 interface ChildComponentProps {
   setOpen: (open: boolean) => void;
@@ -35,7 +35,7 @@ export function FormUser({ setOpen, data, idEdit, roleOptions }: ChildComponentP
 
     console.log(id, values);
 
-    const data = await updateUser(id, values);
+    const data = await updateUserAdmin(id, values);
 
     if (!data) {
       toasterCustom(500, "Ocurrió un error inesperado");
@@ -51,8 +51,11 @@ export function FormUser({ setOpen, data, idEdit, roleOptions }: ChildComponentP
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message);
-      form.setError(data.type, { type: "error", message: data.message });
-      form.setFocus(data.type);
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
@@ -74,8 +77,13 @@ export function FormUser({ setOpen, data, idEdit, roleOptions }: ChildComponentP
     } else if (data.status === 400) {
       toast.dismiss();
       toasterCustom(data.status, data.message);
-      form.setError(data.type, { type: "error", message: data.message });
-      form.setFocus(data.type);
+      form.setError(data.type === 'user' ? "user" : "email", { type: "error", message: data.message });
+      form.setFocus(data.type === 'user' ? "user" : "email");
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      setOpen(false);
     }
   }
 
