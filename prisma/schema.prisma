@@ -9,13 +9,13 @@ datasource db {
   // local
 
   // development
-  // provider = "sqlite"
-  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 
   // production
 
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  // provider = "postgresql"
+  // url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Cliente {

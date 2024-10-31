@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,12 +36,6 @@ function AvatarUser() {
             <Link href={"/dashboard/cuenta"} className="flex p-2">
               <User className="mr-2 h-4 w-4" />
               <span>Cuenta</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer w-full p-0">
-            <Link href={"/dashboard/configuracion"} className="flex p-2">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Configuración general</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
