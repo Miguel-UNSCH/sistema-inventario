@@ -37,28 +37,26 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             // Comprueba si productEntry existe y si su categoryId coincide con selectedCategory
             return productEntry && productEntry.categoryId === selectedCategory;
         });
-
+        console.log(filteredEntries)
         const productQuantities = filteredEntries.reduce((acc, item) => {
             const productEntry = dataProduct.find(entry => entry.id === item.productId);
             if (productEntry) {
                 const { productName, stockMinimo } = productEntry; // Cambiado a productName
                 const { unidad } = item; // Extrae unidad desde dataEntradas
 
-                if (!acc[productName]) {
-                    acc[productName] = { cantidad: 0, stockMinimo: Number(stockMinimo), unidad };
+                // Usa una clave compuesta para diferenciar productos con el mismo nombre pero diferentes unidades
+                const key = `${productName}-${unidad}`;
+
+                if (!acc[key]) {
+                    acc[key] = { name: productName, cantidad: 0, stockMinimo: Number(stockMinimo), unidad };
                 }
 
-                acc[productName].cantidad += item.cantidad - item.cantidadVendida - item.reserva;
+                acc[key].cantidad += item.cantidad - item.cantidadVendida - item.reserva;
             }
             return acc;
         }, {});
 
-        const resultArray = Object.entries(productQuantities).map(([name, { cantidad, stockMinimo, unidad }]) => ({
-            name, // Esto ahora utilizará el valor de productName
-            cantidad,
-            stockMinimo,
-            unidad
-        }));
+        const resultArray = Object.values(productQuantities);
 
         // Actualiza el estado de chartData
         setChartData({
@@ -66,8 +64,6 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             products: resultArray,
         });
     };
-
-    console.log(chartData);
 
     // Ejecuta handleUpdate cada vez que selectedCategory cambie
     useEffect(() => {
