@@ -1,4 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
+'use client'
+
 import { Document, Text, Page, StyleSheet, Image, View } from "@react-pdf/renderer";
 
 // Estilos centralizados
