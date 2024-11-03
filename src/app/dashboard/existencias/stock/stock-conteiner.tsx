@@ -16,9 +16,9 @@ interface StockContainerProps {
 
 function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContainerProps) {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [chartData, setChartData] = useState<{ label: string; products: { name: string; cantidad: number }[] }>({
+    const [chartData, setChartData] = useState<{ label: string; products: { name: string; cantidad: number; stockMinimo: number; unidad: string }[] }>({
         label: "Elige una categoría",
-        products: []
+        products: [],
     });
 
     const categoryOptions = dataCategory.map(category => ({
@@ -37,23 +37,31 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             // Comprueba si productEntry existe y si su categoryId coincide con selectedCategory
             return productEntry && productEntry.categoryId === selectedCategory;
         });
-
-        // Calcula las cantidades de productos
+        console.log(filteredEntries)
         const productQuantities = filteredEntries.reduce((acc, item) => {
-            if (acc[item.productName]) {
-                acc[item.productName] += item.cantidad - item.cantidadVendida - item.reserva ;
-            } else {
-                acc[item.productName] = item.cantidad - item.cantidadVendida - item.reserva;
+            const productEntry = dataProduct.find(entry => entry.id === item.productId);
+            if (productEntry) {
+                const { productName, stockMinimo } = productEntry; // Cambiado a productName
+                const { unidad } = item; // Extrae unidad desde dataEntradas
+
+                // Usa una clave compuesta para diferenciar productos con el mismo nombre pero diferentes unidades
+                const key = `${productName}-${unidad}`;
+
+                if (!acc[key]) {
+                    acc[key] = { name: productName, cantidad: 0, stockMinimo: Number(stockMinimo), unidad };
+                }
+
+                acc[key].cantidad += item.cantidad - item.cantidadVendida - item.reserva;
             }
             return acc;
         }, {});
 
-        const resultArray = Object.entries(productQuantities).map(([name, cantidad]) => ({ name, cantidad }));
+        const resultArray = Object.values(productQuantities);
 
         // Actualiza el estado de chartData
         setChartData({
             label: selectedCategoryName,
-            products: resultArray
+            products: resultArray,
         });
     };
 
@@ -75,7 +83,7 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
                             value={selectedCategory || undefined}
                             onChange={(value) => {
                                 setSelectedCategory(value);
-                                handleUpdate(); // Llama a handleUpdate directamente aquí
+                                // Eliminada la llamada directa a handleUpdate
                             }}
                         />
                     </div>
