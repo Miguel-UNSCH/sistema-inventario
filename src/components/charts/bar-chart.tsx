@@ -19,7 +19,7 @@ import {
 interface CustomBarChartProps {
     data: {
         label: string;
-        products: { name: string; cantidad: number }[];
+        products: { name: string; cantidad: number; stockMinimo: number; unidad: string; }[]; // Cambié stockMinimo a number
     };
 }
 
@@ -43,16 +43,16 @@ export function CustomBarChart({ data }: CustomBarChartProps) {
 
     const filteredData = React.useMemo(() => {
         return data.products.filter((item) =>
-            activeChart === "abundante" ? item.cantidad > 10 :
-                activeChart === "escaso" ? (item.cantidad > 0 && item.cantidad <= 10) :
+            activeChart === "abundante" ? item.cantidad > item.stockMinimo :
+                activeChart === "escaso" ? (item.cantidad > 0 && item.cantidad <= item.stockMinimo) :
                     item.cantidad === 0
         )
     }, [activeChart, data.products])
 
     const total = React.useMemo(
         () => ({
-            abundante: data.products.filter((item) => item.cantidad > 10).length,
-            escaso: data.products.filter((item) => item.cantidad > 0 && item.cantidad <= 10).length,
+            abundante: data.products.filter((item) => item.cantidad > item.stockMinimo).length,
+            escaso: data.products.filter((item) => item.cantidad > 0 && item.cantidad <= item.stockMinimo).length,
             agotado: data.products.filter((item) => item.cantidad === 0).length,
         }),
         [data.products]
@@ -122,8 +122,11 @@ export function CustomBarChart({ data }: CustomBarChartProps) {
                             content={
                                 <ChartTooltipContent
                                     className="w-[150px]"
-                                    nameKey="cantidad"
-                                    labelFormatter={(value) => value}
+                                    labelFormatter={(name) => name}
+                                    formatter={(value, name, props) => [
+                                        "Cantidad: ",
+                                        `${value} ${props.payload.unidad}`,
+                                    ]}
                                 />
                             }
                         />

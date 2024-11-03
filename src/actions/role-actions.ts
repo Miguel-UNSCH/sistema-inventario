@@ -6,7 +6,7 @@ import { z } from "zod";
 import { formatDateTime } from "@/lib/format-date";
 import { roleSchema } from "@/utils/zod/schemas";
 
-export async function getRoleWhitoutPermissions(){
+export async function getRoleWhitoutPermissions() {
   try {
     const roles = await db.role.findMany();
     const formattedData = roles.map((role) => {
@@ -63,13 +63,13 @@ export async function getRoles() {
       include: {
         users: {
           select: {
-            name: true, 
+            name: true,
           },
         },
         permissions: {
           select: {
             module: true,
-            action: true,  
+            action: true,
           },
         },
       },
@@ -152,9 +152,9 @@ export async function createRole(data: z.infer<typeof roleSchema>) {
 
     if (nameRoleFound) {
       return {
-          message: "El nombre de rol ya existe",
-          status: 400,
-        }
+        message: "El nombre de rol ya existe",
+        status: 400,
+      }
     }
 
     await db.role.create({

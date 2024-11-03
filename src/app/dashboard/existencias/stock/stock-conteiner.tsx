@@ -16,9 +16,9 @@ interface StockContainerProps {
 
 function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContainerProps) {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [chartData, setChartData] = useState<{ label: string; products: { name: string; cantidad: number }[] }>({
+    const [chartData, setChartData] = useState<{ label: string; products: { name: string; cantidad: number; stockMinimo: number; unidad: string }[] }>({
         label: "Elige una categoría",
-        products: []
+        products: [],
     });
 
     const categoryOptions = dataCategory.map(category => ({
@@ -38,24 +38,36 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             return productEntry && productEntry.categoryId === selectedCategory;
         });
 
-        // Calcula las cantidades de productos
         const productQuantities = filteredEntries.reduce((acc, item) => {
-            if (acc[item.productName]) {
-                acc[item.productName] += item.cantidad - item.cantidadVendida - item.reserva ;
-            } else {
-                acc[item.productName] = item.cantidad - item.cantidadVendida - item.reserva;
+            const productEntry = dataProduct.find(entry => entry.id === item.productId);
+            if (productEntry) {
+                const { productName, stockMinimo } = productEntry; // Cambiado a productName
+                const { unidad } = item; // Extrae unidad desde dataEntradas
+
+                if (!acc[productName]) {
+                    acc[productName] = { cantidad: 0, stockMinimo: Number(stockMinimo), unidad };
+                }
+
+                acc[productName].cantidad += item.cantidad - item.cantidadVendida - item.reserva;
             }
             return acc;
         }, {});
 
-        const resultArray = Object.entries(productQuantities).map(([name, cantidad]) => ({ name, cantidad }));
+        const resultArray = Object.entries(productQuantities).map(([name, { cantidad, stockMinimo, unidad }]) => ({
+            name, // Esto ahora utilizará el valor de productName
+            cantidad,
+            stockMinimo,
+            unidad
+        }));
 
         // Actualiza el estado de chartData
         setChartData({
             label: selectedCategoryName,
-            products: resultArray
+            products: resultArray,
         });
     };
+
+    console.log(chartData);
 
     // Ejecuta handleUpdate cada vez que selectedCategory cambie
     useEffect(() => {
@@ -75,7 +87,7 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
                             value={selectedCategory || undefined}
                             onChange={(value) => {
                                 setSelectedCategory(value);
-                                handleUpdate(); // Llama a handleUpdate directamente aquí
+                                // Eliminada la llamada directa a handleUpdate
                             }}
                         />
                     </div>
