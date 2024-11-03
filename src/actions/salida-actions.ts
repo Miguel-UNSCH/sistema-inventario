@@ -7,7 +7,36 @@ import { formatDateTime } from "@/lib/format-date";
 import { salidasSchema } from "@/utils/zod/schemas";
 import { z } from "zod";
 
-// ==================== CRUD PRODUCTOS ==========================
+// Definición de la interfaz para la respuesta del comprobante
+interface ComprobanteDetalle {
+  numero: string;
+  fechaEmision: string; // Formato 'dd-mm-yyyy'
+  total: number;
+  subTotal: number;
+  igv: number;
+  cliente: {
+    tipo: string;
+    nombre: string;
+    identifier: string;
+    direccion: string;
+    telefono: string;
+  };
+  productos: {
+    cantidad: number;
+    unidad: string;
+    descripcion: string;
+    precioUnitario: number;
+    subtotal: number;
+  }[];
+}
+
+// Función para formatear la fecha al formato 'dd-mm-yyyy'
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
 
 export async function getSalidasWithoutpermissions() {
   try {
@@ -54,7 +83,6 @@ export async function getSalidasWithoutpermissions() {
     return { message: "error" + error, status: 500 };
   }
 }
-
 
 export async function getSalidas(idClient: string) {
   try {
@@ -511,12 +539,19 @@ export async function confirmVenta(salidaDetalleId: string) {
       return { message: "No tienes permiso para confirmar ventas", status: 400 };
     }
 
-    console.log("Datos para confirmar venta:", salidaDetalleId);
-
     // Buscar el SalidaDetalle
     const salidaDetalle = await db.salidaDetalle.findUnique({
       where: { id: salidaDetalleId },
-      include: { salidas: true },
+      include: { salidas: 
+        { include: { 
+          entrada: {
+            include: {
+              unidad: true
+            }
+          }
+          } 
+        }, cliente: true 
+      },
     });
 
     if (!salidaDetalle) {
@@ -556,18 +591,131 @@ export async function confirmVenta(salidaDetalleId: string) {
         });
       }
 
-      return { salidaDetalleActualizada, salidasActualizadas };
+      // Determinar el tipo de cliente
+      const tipoCliente = salidaDetalle.cliente.tipoCliente; // "natural" o "juridico"
+
+      let documentoCreado;
+
+      /**
+       * Función auxiliar para generar el siguiente número en el formato '0001 - 0001'
+       * @param tipo - 'boleta' o 'factura'
+       * @returns El siguiente número en el formato deseado
+       */
+      async function getNextNumero(
+        tipo: 'boleta' | 'factura'
+      ): Promise<string> {
+        let lastDocumento;
+
+        // Obtener el último documento creado según el tipo
+        if (tipo === 'boleta') {
+          lastDocumento = await prisma.boleta.findFirst({
+            orderBy: { createdAt: 'desc' },
+          });
+        } else {
+          lastDocumento = await prisma.factura.findFirst({
+            orderBy: { createdAt: 'desc' },
+          });
+        }
+
+        // Si no existe ningún documento, iniciar en '0001 - 0001'
+        if (!lastDocumento) {
+          return `0001 - 0001`;
+        }
+
+        const [firstPartStr, secondPartStr] = lastDocumento.numero.split(' - ');
+        let firstPart = parseInt(firstPartStr, 10);
+        let secondPart = parseInt(secondPartStr, 10);
+
+        // Incrementar la segunda parte
+        secondPart += 1;
+
+        // Manejar el rollover si la segunda parte excede 9999
+        if (secondPart > 9999) {
+          secondPart = 0;
+          firstPart += 1;
+        }
+
+        // Formatear ambas partes con ceros a la izquierda
+        const newFirstPart = firstPart.toString().padStart(4, '0');
+        const newSecondPart = secondPart.toString().padStart(4, '0');
+
+        return `${newFirstPart} - ${newSecondPart}`;
+      }
+
+      if (tipoCliente === "natural") {
+        // Crear Boleta
+        const numeroBoleta = await getNextNumero('boleta');
+
+        documentoCreado = await prisma.boleta.create({
+          data: {
+            numero: numeroBoleta,
+            fechaEmision: new Date(),
+            clienteId: salidaDetalle.clientId,
+            total: salidaDetalle.precioVentaTotal,
+            estado: "emitida",
+            detalles: {
+              create: salidaDetalle.salidas.map((salida) => ({
+                productoId: salida.productId,
+                cantidad: salida.cantidad,
+                precioUnitario: salida.precioVenta,
+                descuento: salida.descuento,
+                unidad: salida.entrada.unidad.nombre,
+              })),
+            },
+          },
+        });
+
+        // Actualizar las Salidas con el comprobanteId de la Boleta creada
+        await prisma.salidaDetalle.updateMany({
+          where: { id: salidaDetalleId },
+          data: { comprobanteId: documentoCreado.id },
+        });
+
+      } else if (tipoCliente === "juridico") {
+        // Crear Factura
+        const numeroFactura = await getNextNumero('factura');
+
+        documentoCreado = await prisma.factura.create({
+          data: {
+            numero: numeroFactura,
+            fechaEmision: new Date(),
+            clienteId: salidaDetalle.clientId,
+            total: salidaDetalle.precioVentaTotal,
+            estado: "emitida",
+            detalles: {
+              create: salidaDetalle.salidas.map((salida) => ({
+                productoId: salida.productId,
+                cantidad: salida.cantidad,
+                precioUnitario: salida.precioVenta,
+                descuento: salida.descuento,
+                unidad: salida.entrada.unidad.nombre,
+              })),
+            },
+          },
+        });
+
+        // Actualizar las Salidas con el comprobanteId de la Factura creada
+        await prisma.salidaDetalle.updateMany({
+          where: { id: salidaDetalleId },
+          data: { comprobanteId: documentoCreado.id },
+        });
+      } else {
+        throw new Error("Tipo de cliente desconocido.");
+      }
+
+      return { salidaDetalleActualizada, salidasActualizadas, documentoCreado };
     });
 
     return { message: "Venta confirmada con éxito", status: 200, data: resultado };
   } catch (error) {
     console.error("Error al confirmar la venta:", error);
-    if (error) {
-      return { message: `Error de base de datos: ${error}`, status: 500 };
+    if (error instanceof Error) {
+      return { message: `Error de base de datos: ${error.message}`, status: 500 };
     }
     return { message: "Error inesperado: " + (error instanceof Error ? error.message : error), status: 500 };
   }
 }
+
 
 export async function getDetalleSalidas() {
   try {
@@ -651,12 +799,13 @@ export async function getDetalleSalidas() {
           const proveedorName = salida.entrada.proveedor?.supplierName || "Sin proveedor";
           const cantidad = salida.cantidad;
           const precioTotal = salida.precioVentaTotal.toFixed(2); // Formatear a 2 decimales
-          return `${productName} - ${proveedorName} - Cantidad: ${cantidad} - Precio Total: $${precioTotal}`;
+          return `${productName} - ${proveedorName} - Cantidad: ${cantidad} - Precio Total: S/. ${precioTotal}`;
         })
         .join("\n"); // Separar cada producto por salto de linea
 
       return {
         id: detalle.id,
+        comprobanteId: detalle.comprobanteId,
         clienteName,
         identifier,
         productosVendidos,
@@ -728,5 +877,134 @@ export async function getIdSalidaDetalle(idClient: string) {
     return salidaDetalle.id;
   } catch (error) {
     return { message: "error" + error, status: 500 };
+  }
+}
+
+export async function getDetalleComprobante(comprobanteId: string) {
+  try {
+    // 1. Autenticación del usuario
+    const session = await auth();
+
+    if (!session) {
+      return { message: "No existe sesión activa", status: 401 };
+    }
+
+    // 2. Verificación del rol del usuario
+    const userWithRole = await db.user.findUnique({
+      where: { id: session.user.id },
+      include: { role: true },
+    });
+
+    if (!userWithRole || !userWithRole.roleId) {
+      return { message: "El usuario no tiene un rol asignado", status: 400 };
+    }
+
+    // 3. Verificación de permisos
+    const permissions = await db.permission.findMany({
+      where: { roleId: userWithRole.roleId },
+      select: { module: true, action: true },
+    });
+
+    const hasPermissionToView = permissions.some(
+      (perm) => perm.module === "salidas" && perm.action === "leer"
+    );
+
+    if (!hasPermissionToView) {
+      return { message: "No tienes permiso para ver los comprobantes", status: 400 };
+    }
+
+    // 4. Intentar encontrar una Boleta con el ID proporcionado
+    const boleta = await db.boleta.findUnique({
+      where: { id: comprobanteId },
+      include: {
+        cliente: true,
+        detalles: {
+          include: {
+            producto: true
+          },
+        },
+      },
+    });
+
+    if (boleta) {
+      const subTotal = parseFloat((boleta.total / 1.18).toFixed(2))
+      const igv = parseFloat((boleta.total - subTotal).toFixed(2));
+
+      const detalleComprobante: ComprobanteDetalle = {
+        numero: boleta.numero,
+        fechaEmision: formatDate(boleta.fechaEmision),
+        total: parseFloat((boleta.total).toFixed(2)),
+        subTotal,
+        igv,
+        cliente: {
+          tipo: boleta.cliente?.tipoCliente || "natural",
+          nombre: `${boleta.cliente?.firstName} ${boleta.cliente?.lastName}`,
+          identifier: boleta.cliente?.identifier || '',
+          direccion: boleta.cliente?.address || '',
+          telefono: boleta.cliente?.phone || '',
+        },
+        productos: boleta.detalles.map((detalle) => ({
+          cantidad: detalle.cantidad,
+          unidad: detalle.unidad || '', // Obtener el nombre de la unidad
+          descripcion: detalle.producto.productName,
+          precioUnitario: detalle.precioUnitario,
+          subtotal: parseFloat((detalle.cantidad * detalle.precioUnitario - (detalle.descuento || 0)).toFixed(2)),
+        })),
+      };
+
+      return { message: "Detalle de Boleta obtenido con éxito", status: 200, data: detalleComprobante };
+    }
+
+    // 6. Si no es Boleta, intentar encontrar una Factura
+    const factura = await db.factura.findUnique({
+      where: { id: comprobanteId },
+      include: {
+        cliente: true,
+        detalles: {
+          include: {
+            producto: true,
+          },
+        },
+      },
+    });
+
+    if (factura) {
+      const subTotal = parseFloat((factura.total / 1.18).toFixed(2))
+      const igv = parseFloat((factura.total - subTotal).toFixed(2));
+
+      const detalleComprobante: ComprobanteDetalle = {
+        numero: factura.numero,
+        fechaEmision: formatDate(factura.fechaEmision),
+        total: parseFloat((factura.total).toFixed(2)),
+        subTotal,
+        igv,
+        cliente: {
+          tipo: factura.cliente?.tipoCliente || "juridico", // 'natural' o 'juridico'
+          nombre: factura.cliente?.companyName || '',
+          identifier: factura.cliente?.ruc || '',
+          direccion: factura.cliente?.address || '',
+          telefono: factura.cliente?.phone || '',
+        },
+        productos: factura.detalles.map((detalle) => ({
+          cantidad: detalle.cantidad,
+          unidad: detalle.unidad || '', // Obtener el nombre de la unidad
+          descripcion: detalle.producto.productName,
+          precioUnitario: detalle.precioUnitario,
+          subtotal: parseFloat((detalle.cantidad * detalle.precioUnitario - (detalle.descuento || 0)).toFixed(2)),
+        })),
+      };
+
+      return { message: "Detalle de Factura obtenido con éxito", status: 200, data: detalleComprobante };
+    }
+
+    // 8. Si no es ni Boleta ni Factura, retornar error
+    return { message: "Comprobante no encontrado.", status: 404 };
+
+  } catch (error) {
+    console.error("Error al obtener el detalle del comprobante:", error);
+    if (error instanceof Error) {
+      return { message: `Error inesperado: ${error.message}`, status: 500 };
+    }
+    return { message: "Error inesperado", status: 500 };
   }
 }

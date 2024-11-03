@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { confirmVenta, deleteSalida, getIdSalidaDetalle, getSalidas } from "@/actions/salida-actions";
+import { confirmVenta, deleteSalida, getDetalleComprobante, getIdSalidaDetalle, getSalidas } from "@/actions/salida-actions";
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog";
 import FormContainer from "@/components/forms/form-container";
 import { FormSalida } from "@/components/forms/form-salida";
 import CustomDataTable from "@/components/table/custom-data-table";
+import TableVentas from "@/components/table/table-ventas";
 import toasterCustom from "@/components/toaster-custom";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
+
+import { pdf } from '@react-pdf/renderer';
+import PDF from '@/components/pdf/PDF';
 
 interface SalidasContainerProps {
   data: Record<string, any>[];
@@ -214,6 +218,53 @@ function SalidasContainer({ data, headers, products, clients }: SalidasContainer
     }
   };
 
+  const handleDownloadPdf = async (item: Record<string, any>) => {
+    if (!item.comprobanteId) {
+      toast.error("El comprobante no tiene un ID válido.");
+      return;
+    }
+  
+    try {
+      // 1. Mostrar el loader
+      toasterCustom(0, "Generando PDF...");
+  
+      // 2. Obtener los detalles del comprobante
+      const res = await getDetalleComprobante(item.comprobanteId);
+  
+      if (res.status !== 200 || !res.data) {
+        toasterCustom(res.status, res.message);
+        return;
+      }
+  
+      const detalleComprobante = res.data;
+  
+      // 3. Generar el PDF como Blob utilizando el componente PDF.tsx
+      const blob = await pdf(<PDF data={detalleComprobante} />).toBlob();
+  
+      // 4. Crear una URL para el Blob
+      const url = URL.createObjectURL(blob);
+  
+      // 5. Crear un enlace temporal para descargar el PDF
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `comprobante-${detalleComprobante.numero}.pdf`; // Puedes personalizar el nombre del archivo
+      document.body.appendChild(link);
+      link.click();
+  
+      // 6. Limpiar: remover el enlace y revocar la URL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      // 7. Actualizar el toaster para indicar que la descarga fue exitosa
+      toast.dismiss();
+      toasterCustom(200, "PDF descargado exitosamente.");
+    } catch (error) {
+      console.error("Error al descargar el PDF:", error);
+      toasterCustom(500, "Ocurrió un error al generar el PDF.");
+    }
+  };
+  
+
   return (
     <>
       <ConfirmDialog
@@ -282,13 +333,24 @@ function SalidasContainer({ data, headers, products, clients }: SalidasContainer
               onDelete={handleOpenConfirmDelete}
               onEdit={handleOpenEdit}
             />
+            <div className="flex flex-col sm:flex-row gap-2 items-center justify-between">
+              <span>
+                {
+                  dataSalidas.length === 0
+                   ? "No hay productos agregados."
+                    : `Total: S/. ${
+                      dataSalidas.reduce((acc, curr) => acc + (curr.precioVenta), 0).toFixed(2)
+                    }`
+                }
+              </span>
             <Button disabled={!clientData || dataSalidas.length === 0 || isLoading} onClick={handleOpenConfirm}>
               {isLoading ? "Confirmando..." : "Generar venta"}
             </Button>
+            </div>
           </div>
         </div>
         <FormContainer title="Resumen de ventas/salidas">
-          <CustomDataTable headers={headers} data={data} initialItemsPerPage={5} />
+          <TableVentas onDownload={handleDownloadPdf} headers={headers} data={data} initialItemsPerPage={10} />
         </FormContainer>
       </div>
     </>

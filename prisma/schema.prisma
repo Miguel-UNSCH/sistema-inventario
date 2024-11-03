@@ -9,12 +9,12 @@ datasource db {
   // local
 
   // development
-  // provider = "sqlite"
-  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 
   // production
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  // provider = "postgresql"
+  // url      = env("POSTGRES_PRISMA_URL")
 }
 
 model Cliente {
@@ -134,6 +134,7 @@ model DetalleBoleta {
   cantidad       Float // Cantidad del producto en la boleta
   precioUnitario Float // Precio unitario del producto
   descuento      Float? // Descuento opcional (en porcentaje o monto)
+  unidad         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,6 +152,7 @@ model DetalleFactura {
   cantidad       Float // Cantidad del producto en la factura
   precioUnitario Float // Precio unitario del producto
   descuento      Float? // Descuento opcional (en porcentaje o monto)
+  unidad         String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -282,6 +284,7 @@ model SalidaDetalle {
   estado   String
   clientId String
   cliente  Cliente @relation(fields: [clientId], references: [id])
+  comprobanteId    String?
 
   salidas          Salida[]
   precioVentaTotal Float

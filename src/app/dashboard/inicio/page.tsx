@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
-import FormContainer from "@/components/forms/form-container";
 import { getCategoriesWithoutPermissions } from "@/actions/category-actions";
 import { getProductWithoutPermissions } from "@/actions/product-actions";
 import { getSupplierWithoutPermissions } from "@/actions/supplier-actions";
@@ -54,11 +53,8 @@ function Page({ session }: { session: Session | null }) {
           <CardBlocks title="Proveedores" description="Total de proveedores disponibles" cantidad={proveedores ? proveedores.length : 0} />
         </div>
       </div>
-
-      <div className="text-foreground h-full">
-        <FormContainer title="Productos más vendidos">
-          <CustomAreaChart salidas={salidas || []} />
-        </FormContainer>
+      <div className="w-full h-fit">
+        <CustomAreaChart salidas={salidas || []} />
       </div>
     </div>
   );

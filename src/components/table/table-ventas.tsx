@@ -15,25 +15,23 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash, Columns, ChevronDown, Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
+import { Columns, ChevronDown, Search, FileDown } from "lucide-react"; // Importar FilePdf
 
 interface DataTableProps {
   data: Record<string, any>[];
   headers: { key: string; label: string }[];
   itemsPerPageOptions?: number[];
   initialItemsPerPage?: number;
-  onEdit?: (item: Record<string, any>) => void;
-  onDelete?: (item: Record<string, any>) => void;
+  onDownload?: (item: Record<string, any>) => void; // Agregar onDownload
 }
 
-export default function CustomDataTable({
+export default function TableVentas({
   data,
   headers,
   itemsPerPageOptions = [5, 10, 15, 20],
   initialItemsPerPage = 10,
-  onEdit,
-  onDelete,
+  onDownload,
 }: DataTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(initialItemsPerPage);
@@ -44,15 +42,13 @@ export default function CustomDataTable({
   );
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Actualización: Invertir el orden de los datos filtrados
+  // Invertir el orden de los datos filtrados
   const filteredData = useMemo(() => {
-    // Filtrar los datos según el término de búsqueda
     const filtered = data.filter((item) =>
       headers.some((header) =>
         String(item[header.key]).toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-    // Retornar una copia del array filtrado en orden inverso
     return [...filtered].reverse();
   }, [data, headers, searchTerm]);
 
@@ -207,12 +203,12 @@ export default function CustomDataTable({
                         {header.label}
                       </TableHead>
                     ))}
-                  <TableHead className="whitespace-nowrap">Opciones</TableHead>
+                  <TableHead className="whitespace-nowrap">Comprobante</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentItems.map((item, index) => (
-                  <TableRow key={index}>
+                {currentItems.map((item) => (
+                  <TableRow key={item.id || JSON.stringify(item)}>
                     {headers
                       .filter((header) => visibleColumns.includes(header.key))
                       .map((header) => (
@@ -231,24 +227,14 @@ export default function CustomDataTable({
                         </TableCell>
                       ))}
                     <TableCell className="whitespace-nowrap">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => onEdit && onEdit(item)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Editar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => onDelete && onDelete(item)}>
-                            <Trash className="mr-2 h-4 w-4" />
-                            <span>Eliminar</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Button
+                        variant="ghost"
+                        className="h-8 w-8 p-0 text-red-500" // Color rojo para PDF
+                        onClick={() => onDownload && onDownload(item)}
+                      >
+                        <FileDown className="h-4 w-4" />
+                        <span className="sr-only">Descargar comprobante PDF</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
