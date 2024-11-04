@@ -55,7 +55,6 @@ export async function getSalidasWithoutpermissions() {
   }
 }
 
-
 export async function getSalidas(idClient: string) {
   try {
     const session = await auth();
@@ -147,6 +146,43 @@ export async function getSalidas(idClient: string) {
     return { message: "error" + error, status: 500 };
   }
 }
+
+export async function getSalidasReporte() {
+  try {
+    const salidas = await db.salida.findMany({
+      include: {
+        producto: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    console.log(salidas);
+
+    const formattedData = salidas.map((salida) => {
+      const date = new Date(salida.updatedAt); // Convert updatedAt to a Date object
+      const day = date.getDate(); // Get the day
+      const month = date.getMonth() + 1; // Get the month (0-11) and add 1
+      const year = date.getFullYear(); // Get the year
+
+      return {
+        productId: salida.producto.id, // Return productId
+        cantidad: salida.cantidad, // Return quantity sold
+        totalRevenue: salida.precioVentaTotal, // Calculate total revenue based on price and quantity
+        updatedAt: { day, month, year }, // Return updatedAt as a separate object
+      };
+    });
+
+    return formattedData;
+  } catch (error) {
+    console.error("Error fetching sales report:", error); // Log the error for debugging
+    return { message: "error: " + error, status: 500 }; // Provide a more descriptive error message
+  }
+}
+
+
 
 export async function createSalida(data: z.infer<typeof salidasSchema>) {
   try {

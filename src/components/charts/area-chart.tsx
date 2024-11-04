@@ -1,55 +1,48 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
     ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-} from "@/components/ui/chart"
-
-export const description = "A simple area chart"
-
-const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-]
+} from "@/components/ui/chart";
 
 const chartConfig = {
     desktop: {
         label: "Desktop",
         color: "var(--chart-1)",
     },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function CustomAreaChart() {
+interface CustomAreaChartProps {
+    productName: string;
+    productDescription: string;
+    ventasData: { day: string; ventas: number }[];
+}
+
+export function CustomAreaChart({
+    productName,
+    productDescription,
+    ventasData,
+}: CustomAreaChartProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Area Chart</CardTitle>
-                <CardDescription>
-                    Showing total visitors for the last 6 months
-                </CardDescription>
+                <CardTitle>Producto: {productName}</CardTitle>
+                <CardDescription>{productDescription}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <AreaChart
-                        accessibilityLayer
-                        data={chartData}
+                        data={ventasData}
                         margin={{
                             left: 12,
                             right: 12,
@@ -57,18 +50,21 @@ export function CustomAreaChart() {
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
-                            dataKey="month"
+                            dataKey="day"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             tickFormatter={(value) => value.slice(0, 3)}
                         />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="line" />}
+                        <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            domain={[0, 'dataMax + 10']}
                         />
+                        <Tooltip content={<ChartTooltipContent indicator="line" />} />
                         <Area
-                            dataKey="desktop"
+                            dataKey="ventas"
                             type="natural"
                             fill="var(--color-desktop)"
                             fillOpacity={0.4}
@@ -77,18 +73,6 @@ export function CustomAreaChart() {
                     </AreaChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter>
-                <div className="flex w-full items-start gap-2 text-sm">
-                    <div className="grid gap-2">
-                        <div className="flex items-center gap-2 font-medium leading-none">
-                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            January - June 2024
-                        </div>
-                    </div>
-                </div>
-            </CardFooter>
         </Card>
-    )
+    );
 }
