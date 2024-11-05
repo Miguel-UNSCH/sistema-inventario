@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import * as React from "react";
+import { Label, Pie, PieChart, Cell } from "recharts";
 
 import {
   Card,
@@ -11,60 +10,59 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "A donut chart with text"
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
+// Define las propiedades que aceptará el componente
+interface CustomPieChartProps {
+  chartData: {
+    fecha: string;
+    cantidadVentas: number;
+    categoria: string;
+    ventaTotal: number;
+  }[]; // Asegúrate de que esta estructura es correcta
+}
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  cantidadVentas: {
+    label: "Ventas",
   },
-  chrome: {
-    label: "Chrome",
-    color: "var(--chart-1)",
-  },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function CustomPieChart() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+export function CustomPieChart({ chartData }: CustomPieChartProps) {
+  // Calcular total de ventas y total recaudado
+  const totalVentas = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.cantidadVentas, 0);
+  }, [chartData]);
+
+  const totalRevenue = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.ventaTotal, 0);
+  }, [chartData]);
+
+  // Función para determinar el color del segmento basado en la cantidad de ventas
+  const getColor = (cantidadVentas: number) => {
+    if (cantidadVentas === 0) {
+      return "var(--chart-3)"; // Color para 0 ventas
+    } else if (cantidadVentas < 10) {
+      return "var(--chart-2)"; // Color para pocas ventas
+    } else {
+      return "var(--chart-1)"; // Color para muchas ventas
+    }
+  };
+
+  // Asegúrate de que haya al menos un elemento en el chartData
+  const pieData = chartData.length > 0 ? chartData : [{ fecha: "Sin datos", cantidadVentas: 0, categoria: "N/A", ventaTotal: 0 }];
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Carta de detalles</CardTitle>
+        <CardDescription>{pieData[0].fecha}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -77,39 +75,42 @@ export function CustomPieChart() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={pieData}
+              dataKey="cantidadVentas"
+              nameKey="categoria"
               innerRadius={60}
               strokeWidth={5}
             >
+              {pieData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={getColor(entry.cantidadVentas)} />
+              ))}
               <Label
                 content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
+                  // Cast viewBox to the appropriate type
+                  const { cx, cy } = viewBox as { cx: number; cy: number }; // Ensure cx and cy are defined
+                  return (
+                    <text
+                      x={cx}
+                      y={cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={cx}
+                        y={cy}
+                        className="fill-foreground text-3xl font-bold"
                       >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {totalVisitors.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Visitors
-                        </tspan>
-                      </text>
-                    )
-                  }
+                        {totalVentas > 0 ? totalVentas.toLocaleString() : "0"}
+                      </tspan>
+                      <tspan
+                        x={cx}
+                        y={(cy || 0) + 24}
+                        className="fill-muted-foreground"
+                      >
+                        Ventas
+                      </tspan>
+                    </text>
+                  );
                 }}
               />
             </Pie>
@@ -117,13 +118,13 @@ export function CustomPieChart() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+        <div className="leading-none text-muted-foreground">
+          Categoria: {pieData.length > 0 ? pieData[0].categoria : "N/A"}
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Total Recaudado: S/. {totalRevenue.toFixed(2)}
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

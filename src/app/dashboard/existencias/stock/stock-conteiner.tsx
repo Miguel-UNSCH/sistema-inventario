@@ -37,7 +37,7 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             // Comprueba si productEntry existe y si su categoryId coincide con selectedCategory
             return productEntry && productEntry.categoryId === selectedCategory;
         });
-        console.log(filteredEntries)
+
         const productQuantities = filteredEntries.reduce((acc, item) => {
             const productEntry = dataProduct.find(entry => entry.id === item.productId);
             if (productEntry) {
@@ -56,7 +56,8 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
             return acc;
         }, {});
 
-        const resultArray = Object.values(productQuantities);
+        // Convierte el objeto a un array y ordena alfabéticamente por el nombre del producto
+        const resultArray = Object.values(productQuantities).sort((a, b) => a.name.localeCompare(b.name));
 
         // Actualiza el estado de chartData
         setChartData({
@@ -76,14 +77,13 @@ function StockConteiner({ dataProduct, dataCategory, dataEntradas }: StockContai
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex w-full md:w-auto items-center gap-2">
-                    <div style={{ width: "250px" }}>
+                    <div className="w-[250px]">
                         <Combobox
                             options={categoryOptions}
                             placeholder="Selecciona la categoría"
                             value={selectedCategory || undefined}
                             onChange={(value) => {
                                 setSelectedCategory(value);
-                                // Eliminada la llamada directa a handleUpdate
                             }}
                         />
                     </div>
