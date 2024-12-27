@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "./fonts/GeistSansVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Sistema gestor de inventarios",
-  description: "Sistema gestor de inventarios",
+  title: "Titulo de la pagina",
+  description: "Descripción de la página",
   manifest: '/manifest.json'
 };
 
